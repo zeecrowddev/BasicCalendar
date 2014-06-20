@@ -1,0 +1,19 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<RCC>
+	<qresource prefix='/BasicCalendar'>
+		<file>Packages\BasicCalendar.cfg</file>
+		<file>Resources\back.png</file>
+		<file>Resources\close.png</file>
+		<file>Resources\editmode.png</file>
+		<file>Resources\ok.png</file>
+		<file>Resources\plus.png</file>
+		<file>Views\DayEvents.qml</file>
+		<file>Views\Main.js</file>
+		<file>Views\Main.qml</file>
+		<file>Views\OneEvent.qml</file>
+		<file>Views\OnEventDelegate.qml</file>
+		<file>Views\SplashScreen.qml</file>
+		<file>Views\Tools.js</file>
+		<file>BasicCalendar.zeeapmanifest</file>
+	</qresource>
+</RCC>
