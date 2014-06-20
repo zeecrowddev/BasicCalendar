@@ -14,12 +14,44 @@ Item
 
     property date currentDate : null
 
+    Row {
+        id: eventDateRow
+        anchors.top : parent.top
+        anchors.left : parent.left
+
+        width: parent.width
+        height: eventDayLabel.height
+        spacing: 10
+
+        Label {
+            id: eventDayLabel
+            text: currentDate.getDate()
+            font.pointSize: 35
+        }
+
+        Column {
+            height: eventDayLabel.height
+
+            Label {
+                readonly property var options: { weekday: "long" }
+                text: Qt.locale().standaloneDayName(currentDate.getDay(), Locale.LongFormat)
+                font.pointSize: 18
+            }
+            Label {
+                text: Qt.locale().standaloneMonthName(currentDate.getMonth())
+                      + currentDate.toLocaleDateString(Qt.locale(), " yyyy")
+                font.pointSize: 12
+            }
+        }
+    }
+
 
     ToolBar
     {
         id : toolBar
 
-        anchors.top : parent.top
+        anchors.top : eventDateRow.bottom
+        anchors.topMargin : 5
 
         style : ToolBarStyle{}
 
@@ -64,22 +96,22 @@ Item
 }
 }
 
-Label
-{
-    id : currentDateLabel
-    height : 16
-    anchors.right: toolBar.right
-    anchors.verticalCenter: toolBar.verticalCenter
+//Label
+//{
+//    id : currentDateLabel
+//    height : 16
+//    anchors.right: toolBar.right
+//    anchors.verticalCenter: toolBar.verticalCenter
 
-    font.pixelSize: 16
-    font.bold: true
-}
+//    font.pixelSize: 16
+//    font.bold: true
+//}
 
 
 function updateEvents(date,dates)
 {
     currentDate = date
-    currentDateLabel.text = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " "
+    //currentDateLabel.text = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " "
     listView.model = dates;
 }
 
@@ -90,6 +122,7 @@ OneEvent
     anchors
     {
         top : toolBar.bottom
+        topMargin : 10
         bottom : parent.bottom
         left : parent.left
         right : parent.right

@@ -58,162 +58,204 @@ Item
     property int eH : 0
     property int eM : 0
 
-
-    Label
+    Column
     {
-        id : labelStart
-        height : 20
-        width : 60
+        anchors.fill: parent
 
-        text : "Start : "
+        spacing: 10
 
-        anchors.top : parent.top
-        anchors.topMargin : 5
-        anchors.left : parent.left
-        anchors.leftMargin : 5
+        Row
+        {
+            spacing: 5
+            height : 40
+            width : parent.width
+
+            Label
+            {
+                id : labelStart
+                height : 20
+                width : 60
+
+                font.pixelSize: 20
+                font.bold: true
+
+                text : "Start : "
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            SpinBox
+            {
+                id : startHour
+                height : 40
+                width : 60
+
+                font.pixelSize: 20
+
+                minimumValue : 1
+                maximumValue : 12
+                stepSize : 1
+
+                style : SpinBoxStyle{}
+
+                anchors.verticalCenter: parent.verticalCenter
+
+                value :  oneEvent.sH
+            }
+
+            Label
+            {
+                id : separtor
+                height : 20
+                width : 10
+
+
+                font.pixelSize: 20
+                font.bold: true
+
+                text : ":"
+
+                verticalAlignment: Text.AlignHCenter
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            SpinBox
+            {
+                id : startMinute
+
+                height : 40
+                width : 60
+
+                font.pixelSize: 20
+
+                minimumValue : 0
+                maximumValue : 60
+                stepSize : 1
+
+                style : SpinBoxStyle{}
+
+                anchors.verticalCenter: parent.verticalCenter
+
+                value :  oneEvent.sM
+            }
+
+        }
+
+        Row
+        {
+            height : 40
+            width : parent.width
+
+            spacing: 5
+
+            Label
+            {
+                id : labelEnd
+                height : 20
+                width : 60
+
+                font.pixelSize: 20
+                font.bold: true
+
+                text : "End : "
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            SpinBox
+            {
+                id : endHour
+                height : 40
+                width : 60
+
+                font.pixelSize: 20
+
+                minimumValue : 1
+                maximumValue : 12
+                stepSize : 1
+
+                style : SpinBoxStyle{}
+
+                anchors.verticalCenter: parent.verticalCenter
+
+                value :  oneEvent.eH
+            }
+
+            Label
+            {
+                height : 20
+                width : 10
+
+                font.pixelSize: 20
+                font.bold: true
+
+                text : ":"
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            SpinBox
+            {
+                id : endMinute
+                height : 40
+                width : 60
+
+                font.pixelSize: 20
+
+                minimumValue : 0
+                maximumValue : 60
+                stepSize : 1
+
+                style : SpinBoxStyle{}
+
+                anchors.verticalCenter: parent.verticalCenter
+
+                value :  oneEvent.eM
+            }
+
+
+        }
+
+        Row
+        {
+            spacing: 5
+
+            height : 40
+            width : parent.width
+
+            Label
+            {
+                id : labelTitle
+                height : 20
+                width : 60
+
+                font.pixelSize: 20
+                font.bold: true
+
+                text : "Title : "
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            TextField
+            {
+                style: TextFieldStyle {}
+                id : title
+                height : 40
+                width : parent.width - labelTitle.width - 10
+
+                font.pixelSize: 20
+
+                anchors.verticalCenter: parent.verticalCenter
+
+
+                text :  oneEvent.eventTitle
+            }
+        }
     }
 
-    SpinBox
-    {
-        id : startHour
-        height : 40
-        width : 40
-
-        minimumValue : 1
-        maximumValue : 12
-        stepSize : 1
-
-        style : SpinBoxStyle{}
-
-        anchors.top  : labelStart.top
-        anchors.left : labelStart.right
-        anchors.leftMargin: 5
-
-        value :  oneEvent.sH
-    }
-
-    Label
-    {
-        id : separtor
-        height : 20
-        width : 30
-
-        text : ":"
-
-        anchors.top  : labelStart.top
-        anchors.left : startHour.right
-    }
-
-    SpinBox
-    {
-        id : startMinute
-        height : 20
-        width : 40
-
-        minimumValue : 0
-        maximumValue : 60
-        stepSize : 1
-
-        style : SpinBoxStyle{}
-
-        anchors.top  : labelStart.top
-        anchors.left : startHour.right
-        anchors.leftMargin: 5
-
-        value :  oneEvent.sM
-    }
-
-    Label
-    {
-        id : labelEnd
-        height : 20
-        width : 60
-
-        text : "End : "
-
-        anchors.top : labelStart.bottom
-        anchors.topMargin : 5
-        anchors.left : parent.left
-        anchors.leftMargin : 5
-    }
-
-    SpinBox
-    {
-        id : endHour
-        height : 20
-        width : 40
-
-        minimumValue : 1
-        maximumValue : 12
-        stepSize : 1
-
-        style : SpinBoxStyle{}
-
-        anchors.top  : labelEnd.top
-        anchors.left : labelEnd.right
-        anchors.leftMargin: 5
-
-        value :  oneEvent.eH
-    }
-
-    Label
-    {
-        height : 20
-        width : 30
-
-        text : ":"
-
-        anchors.top  : labelEnd.top
-        anchors.left : startHour.right
-    }
-
-    SpinBox
-    {
-        id : endMinute
-        height : 20
-        width : 40
-
-        minimumValue : 0
-        maximumValue : 60
-        stepSize : 1
-
-        style : SpinBoxStyle{}
-
-        anchors.top  : labelEnd.top
-        anchors.left : endHour.right
-        anchors.leftMargin: 5
-
-        value :  oneEvent.eM
-    }
 
 
-    Label
-    {
-        id : labelTitle
-        height : 20
-        width : 60
 
-        text : "Title : "
-
-        anchors.top : labelEnd.bottom
-        anchors.topMargin : 5
-        anchors.left : parent.left
-        anchors.leftMargin : 5
-    }
-
-    TextField
-    {
-        style: TextFieldStyle {}
-        id : title
-        height : 20
-
-        anchors.top  : labelTitle.top
-        anchors.left : labelEnd.right
-        anchors.leftMargin: 5
-        anchors.right: parent.right
-        anchors.rightMargin: 5
-
-        text :  oneEvent.eventTitle
-
-    }
 }

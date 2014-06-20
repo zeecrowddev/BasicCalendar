@@ -229,6 +229,11 @@ Zc.AppView
             Layout.fillWidth : true
 
 
+            Component.onCompleted:
+            {
+                dayEvents.currentDate = calendar.selectedDate
+            }
+
             style : CalendarStyle
             {
 
@@ -283,6 +288,20 @@ Zc.AppView
                 }
 
 
+
+                function calculateHeaderColor(date)
+                {
+                    var now = new Date()
+                    if (date.getDate() !== now.getDate())
+                        return "grey"
+                    if (date.getMonth() !== now.getMonth())
+                        return "grey"
+                    if (date.getYear() !== now.getYear())
+                        return "grey"
+
+                    return "orange"
+                }
+
                 Rectangle
                 {
                     id : dayHeader
@@ -290,7 +309,7 @@ Zc.AppView
                     anchors.left : parent.left
                     anchors.right : parent.right
                     height: 25
-                    color:  styleData.date.getTime === Date.now() ? "orange" :  "grey"
+                    color:  calculateHeaderColor(styleData.date)
                     border.color: "grey"
                     border.width: 1
                     Label {
@@ -352,7 +371,7 @@ Zc.AppView
                     border.width: 1
                     color:  calculateBackcolorAndOthers(mainView["_" + dayProperty],styleData.valid,styleData.selected)
                     anchors.margins: styleData.selected ? -1 : 0
-                    opacity : 0.3
+                    opacity : 0.8
                 }
 
 
