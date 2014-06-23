@@ -14,11 +14,7 @@ Item
         var startdate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),startHour.value,startMinute.value,0,0);
         var enddate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),endHour.value,endMinute.value,0,0);
 
-        console.log(">> validateEvent "  + startdate + " " + enddate)
-
         var who = id === "" ? mainView.context.nickname : oneEvent.who
-
-        console.log(">> validate with who " + who)
 
         mainView.addOrModifyEvent(id,startdate,enddate,title.text,who)
     }
@@ -31,15 +27,12 @@ Item
         oneEvent.sM = 0
         oneEvent.eH = 8
         oneEvent.eM = 0
+        oneEvent.eventTitle = ""
         oneEvent.who = ""
     }
 
     function updateData(model)
     {
-        console.log(">> update " + model)
-
-        console.log(">> update " + model.id)
-
         oneEvent.id = model.id
         oneEvent.who = model.cU
         oneEvent.sH = model.sH

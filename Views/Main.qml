@@ -154,11 +154,9 @@ Zc.AppView
             if (listEvent.dates === null || listEvent.dates === undefined)
                 continue
 
-            console.log(">> dayPropertyFromIdItem i " + i)
-
             if (Tools.existsInArray( listEvent.dates, function (x)
-                 { return x.id === idItem})
-               )
+            { return x.id === idItem})
+                    )
             {
                 return i;
             }
@@ -222,6 +220,72 @@ Zc.AppView
 
         }
 
+
+        //        Calendar {
+        //            id: calendar
+        //            width: parent.width * 0.6 - row.spacing / 2
+        //            height: parent.height
+        //            selectedDate: new Date(2014, 0, 1)
+        //            focus: true
+
+        ////            onVisibleMonthChanged:
+        ////            {
+        ////                calculateParameters()
+        ////                mainView.updateAll();
+        ////            }
+
+        ////            onVisibleYearChanged:
+        ////            {
+        ////                  calculateParameters()
+        ////                  mainView.updateAll();
+        ////            }
+
+        //            style: CalendarStyle {
+        //                dayDelegate: Item {
+        //                    readonly property color sameMonthDateTextColor: "#444"
+        //                    readonly property color selectedDateColor: Qt.platform.os === "osx" ? "#3778d0" : __syspal.highlight
+        //                    readonly property color selectedDateTextColor: "white"
+        //                    readonly property color differentMonthDateTextColor: "#bbb"
+        //                    readonly property color invalidDatecolor: "#dddddd"
+
+        //                    Rectangle {
+        //                        anchors.fill: parent
+        //                        border.color: "transparent"
+        //                        color: styleData.date !== undefined && styleData.selected ? selectedDateColor : "transparent"
+        //                        anchors.margins: styleData.selected ? -1 : 0
+        //                    }
+
+        //                    Image {
+        //                        visible: eventModel.eventsForDate(styleData.date).length > 0
+        //                        anchors.top: parent.top
+        //                        anchors.left: parent.left
+        //                        anchors.margins: -1
+        //                        width: 12
+        //                        height: width
+        //                        source: "qrc:/images/eventindicator.png"
+        //                    }
+
+        //                    Label {
+        //                        id: dayDelegateText
+        //                        text: styleData.date.getDate()
+        //                        font.pixelSize: 14
+        //                        anchors.centerIn: parent
+        //                        color: {
+        //                            var color = invalidDatecolor;
+        //                            if (styleData.valid) {
+        //                                // Date is within the valid range.
+        //                                color = styleData.visibleMonth ? sameMonthDateTextColor : differentMonthDateTextColor;
+        //                                if (styleData.selected) {
+        //                                    color = selectedDateTextColor;
+        //                                }
+        //                            }
+        //                            color;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
         Calendar
         {
             id : calendar
@@ -231,6 +295,7 @@ Zc.AppView
 
             Component.onCompleted:
             {
+
                 dayEvents.currentDate = calendar.selectedDate
             }
 
@@ -241,138 +306,143 @@ Zc.AppView
 
             dayDelegate:
                 Item
+            {
+            readonly property color sameMonthDateTextColor: "#444"
+            readonly property color selectedDateColor: Qt.platform.os === "osx" ? "#3778d0" : __syspal.highlight
+            readonly property color selectedDateTextColor: "white"
+            readonly property color differentMonthDateTextColor: "#bbb"
+            readonly property color invalidDatecolor: "#dddddd"
+
+
+            property string dayProperty : calculateDayProperty(styleData.date)
+
+
+            function calculateModel(value)
+            {
+                var o = Tools.parseDatas(value)
+
+                if (o.dates !== undefined || o.dates !== null)
                 {
-                 readonly property color sameMonthDateTextColor: "#444"
-                 readonly property color selectedDateColor: Qt.platform.os === "osx" ? "#3778d0" : __syspal.highlight
-                 readonly property color selectedDateTextColor: "white"
-                 readonly property color differentMonthDateTextColor: "#bbb"
-                 readonly property color invalidDatecolor: "#dddddd"
+                    return o.dates
+                }
+                return null;
+            }
 
+            function calculateColor(selected,visibleMonth)
+            {
 
-                property string dayProperty : calculateDayProperty(styleData.date)
-
-
-                function calculateBackcolorAndOthers(value ,valid, selected)
+                if (selected)
                 {
-                    var o = Tools.parseDatas(value)
+                    return selectedDateColor
+                }
 
-                    if (o.dates !== undefined || o.dates !== null)
-                    {
-                        listEvent.model = o.dates
-                    }
-                    else
-                    {
-                        listEvent.model = null;
-                    }
-
-                    console.log(">> calculateBackcolorAndOthers list " + listEvent.model)
-
-                    if (!valid)
-                    {
-                        listEvent.model = null
-                    }
-
-                    if ( selected )
-                    {
-                        console.log(">> selectedDateColor")
-                        return selectedDateColor;
-                    }
-                    else if (!valid)
-                    {
-                        console.log(">> !styleData.isValid")
-                        return invalidDatecolor
-                    }
-
-
-                    return "transparent"
+                if (!visibleMonth)
+                {
+                    return differentMonthDateTextColor;
                 }
 
 
+                return "transparent"
+            }
 
-                function calculateHeaderColor(date)
+            function calculateTextColor(selected,visibleMonth)
+            {
+
+                if (selected)
                 {
-                    var now = new Date()
-                    if (date.getDate() !== now.getDate())
-                        return "grey"
-                    if (date.getMonth() !== now.getMonth())
-                        return "grey"
-                    if (date.getYear() !== now.getYear())
-                        return "grey"
-
-                    return "orange"
+                    return selectedDateTextColor
                 }
 
-                Rectangle
+                if (!visibleMonth)
                 {
-                    id : dayHeader
-                    anchors.top : parent.top
-                    anchors.left : parent.left
-                    anchors.right : parent.right
-                    height: 25
-                    color:  calculateHeaderColor(styleData.date)
-                    border.color: "grey"
-                    border.width: 1
-                    Label {
-                        id: dayDelegateText
-                        text: styleData.date.getDate()
-                        font.pixelSize: 14
-                        anchors.centerIn: parent
-                        color: "white"
-                    }
+                    return invalidDatecolor;
                 }
 
-                Rectangle
+                return "white"
+            }
+
+
+            Rectangle
+            {
+                id : dayHeader
+                anchors.top : parent.top
+                anchors.left : parent.left
+                anchors.right : parent.right
+                height: 25
+                color:  styleData.today ? "orange" : "grey"
+                border.color: "grey"
+                border.width: 1
+                Label {
+                    id: dayDelegateText
+                    text: styleData.date.getDate()
+                    font.pixelSize: 14
+                    anchors.centerIn: parent
+                    color: calculateTextColor(styleData.selected,styleData.visibleMonth)
+                }
+            }
+
+            Rectangle
+            {
+                anchors.fill: listEvent
+                color : "lightgrey"
+                opacity : 0.5
+            }
+
+            ListView
+            {
+                id : listEvent
+
+                anchors
                 {
-                    anchors.fill: listEvent
-                    color : "lightgrey"
-                    opacity : 0.5
+                    top : dayHeader.bottom
+                    topMargin : 3
+                    bottom : parent.bottom
+                    bottomMargin : 3
+                    left : parent.left
+                    leftMargin : 3
+                    right : parent.right
+                    rightMargin : 3
                 }
 
-                ListView
-                {
-                    id : listEvent
+                model : calculateModel(mainView["_" + dayProperty])
 
+                spacing : 3
 
-
-                    anchors
+                delegate : Rectangle {     color : index % 2 ? "#f2f2f2" : "white" ;
+                    height : 15; width : parent.width;
+                    clip : true
+                    Label
                     {
-                        top : dayHeader.bottom
-                        topMargin : 3
-                        bottom : parent.bottom
-                        bottomMargin : 3
-                        left : parent.left
-                        leftMargin : 3
-                        right : parent.right
-                        rightMargin : 3
+                        text : "<b>"  + modelData.sH + ":" + modelData.sM + "-" + modelData.eH + ":" + modelData.eM + "</b> " + modelData.title
+                        width : parent.width
+                        height : parent.height
+                        anchors.left : parent.left
+                        elide : Text.ElideRight
                     }
-                    spacing : 3
-                    delegate : Rectangle {  color : "white" ;
-                                            height : 15; width : parent.width;
-                                            clip : true
-                                            Label
-                                            {
-                                                text : modelData.sH + ":" + modelData.sM + " - " + modelData.eM + ":" + modelData.eM + " " + modelData.title
-                                                width : parent.width
-                                                height : parent.height
-                                                anchors.left : parent.left
-                                                elide : Text.ElideRight
-                                            }
-                    }
-                    interactive: false
                 }
+                interactive: false
+            }
 
 
-                Rectangle
+            Rectangle
+            {
+                id : backColor
+
+                anchors
                 {
-                    id : backColor
-                    anchors.fill: parent
-                    radius : 5
-                    border.color: "lightgrey"
-                    border.width: 1
-                    color:  calculateBackcolorAndOthers(mainView["_" + dayProperty],styleData.valid,styleData.selected)
-                    anchors.margins: styleData.selected ? -1 : 0
-                    opacity : 0.8
+                    top : dayHeader.bottom
+                    bottom : parent.bottom
+                    right : parent.right
+                    left : parent.left
                 }
+
+                radius : 5
+                border.color: "lightgrey"
+                border.width: 1
+                color:  calculateColor(styleData.selected,styleData.visibleMonth) //"grey" //calculateBackcolorAndOthers(mainView["_" + dayProperty])
+                anchors.margins: styleData.selected ? -1 : 0
+                opacity : 0.8
+            }
 
 
 
@@ -382,10 +452,8 @@ Zc.AppView
                 anchors.fill: parent
                 onClicked:
                 {
-                    //if (styleData.valid)
-                    console.log(">> on cliked " + styleData.date)
+
                     calendar.selectedDate = styleData.date
-                //    styleData.selected = true
                     calendar.clicked(styleData.date)
                 }
             }
@@ -397,17 +465,6 @@ Zc.AppView
     {
         if ( dayEvents.state === "allevents" )
             updateDayEventsList(date);
-
-//        var key = generateKey(date) ;
-
-//        if (items.getItem(key,"___") === "___")
-//        {
-//            items.setItem(key,"",null)
-//        }
-//        else
-//        {
-//            items.deleteItem(key)
-//        }
     }
 
     onVisibleMonthChanged:
@@ -416,11 +473,8 @@ Zc.AppView
         mainView.updateAll();
     }
 
-    onVisibleYearChanged:
-    {
-        calculateParameters()
-        mainView.updateAll();
-    }
+
+
 }
 
 }
@@ -444,15 +498,9 @@ function calculateDayFromItem(idItem)
 
 function calculateDayProperty(date)
 {
-    console.log(">> calculateDayProperty " + date)
-
     var daydate = date.getDate();
     var month = date.getMonth();
     var year = date.getFullYear();
-
-    console.log(">> calculateDayProperty : day : "  + daydate  + " month " + month + " fullyear " + year)
-
-
 
     var val = 0;
     if (month === mainView.currentMonth)
@@ -482,11 +530,7 @@ function calculateDayProperty(date)
 
 function deleteItemFromItem(idItem)
 {
-    console.log(">> deleteItemFromItem " + idItem)
-
     var dayProperty = mainView.dayPropertyFromIdItem(idItem)
-
-    console.log(">> deleteItemFromItem dayProperty " + dayProperty)
 
     if (dayProperty === 100)
         return;
@@ -503,88 +547,85 @@ function deleteItemFromItem(idItem)
 
     mainView["_" + dayProperty] = JSON.stringify(allday)
 
-    console.log(">> dayEvents.currentDate " + dayEvents.currentDate + " " + allday.dD  + " " + allday.dM + " " + allday.dM + " " + allday.dY)
-
     if (dayEvents.currentDate.getDate() === allday.dD &&
-        dayEvents.currentDate.getMonth() === allday.dM &&
-        dayEvents.currentDate.getFullYear() === allday.dY)
+            dayEvents.currentDate.getMonth() === allday.dM &&
+            dayEvents.currentDate.getFullYear() === allday.dY)
     {
-        console.log(">> call  updateDayEventsList)");
         updateDayEventsList(dayEvents.currentDate)
     }
 }
 
 function updateDayPropertyFromItem(idItem)
 {
-    var stro = items.getItem(idItem,"{}")
-    console.log(" >> updateDayPropertyFromItem " + stro)
-
-    var o = Tools.parseDatas(stro);
-
-    console.log(">> update at date : " + o.date)
-
-    if (o.date === undefined || o.date === null || o.date === "")
-        return;
-
-    // on vérouille toujours l'id
-    o.id = idItem
-
-    var split = o.date.split("/");
-    var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
-
-    var dayProperty = mainView.calculateDayProperty(date);
-
-    console.log(">> dayProperty " + dayProperty)
-
-    if (dayProperty === 100)
-        return;
-
-
-    var allday = Tools.parseDatas(mainView["_" + dayProperty]);
-
-    if (allday.dates === undefined || allday.dates === null)
+    try
     {
-        allday.dates = [];
+        var stro = items.getItem(idItem,"{}")
+
+        var o = Tools.parseDatas(stro);
+
+        if (o.date === undefined || o.date === null || o.date === "")
+            return;
+
+        // on vérouille toujours l'id
+        o.id = idItem
+
+        var split = o.date.split("/");
+
+        if ( split[0] === "NaN")
+            return;
+        if ( split[1] === "NaN")
+            return;
+        if ( split[2] === "NaN")
+            return;
+
+        var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
+
+        var dayProperty = mainView.calculateDayProperty(date);
+
+        if (dayProperty === 100)
+            return;
+
+
+        var allday = Tools.parseDatas(mainView["_" + dayProperty]);
+
+        if (allday.dates === undefined || allday.dates === null)
+        {
+            allday.dates = [];
+        }
+
+        allday.dY = date.getFullYear()
+        allday.dM = date.getMonth()
+        allday.dD = date.getDate()
+
+        var found = Tools.indexInArray(allday.dates, function (x) { return x.id === idItem})
+
+        if (found !== -1)
+        {
+            allday.dates[found] = o;
+        }
+        else
+        {
+            allday.dates.push(o);
+        }
+
+        mainView["_" + dayProperty] = JSON.stringify(allday)
+
+        if (dayEvents.currentDate.getDate() === allday.dD &&
+                dayEvents.currentDate.getMonth() === allday.dM &&
+                dayEvents.currentDate.getFullYear() === allday.dY)
+        {
+            updateDayEventsList(date)
+        }
     }
-
-    allday.dY = date.getFullYear()
-    allday.dM = date.getMonth()
-    allday.dD = date.getDate()
-
-
-    console.log(">> allday.date " + date)
-
-    var found = Tools.indexInArray(allday.dates, function (x) { return x.id === idItem})
-
-    console.log(">> found " + found);
-
-    if (found !== -1)
+    catch(e)
     {
-        allday.dates[found] = o;
-    }
-    else
-    {
-        console.log(">> allday push " + allday)
-        allday.dates.push(o);
-    }
 
-    mainView["_" + dayProperty] = JSON.stringify(allday)
-
-    if (dayEvents.currentDate.getDate() === allday.dD &&
-        dayEvents.currentDate.getMonth() === allday.dM &&
-        dayEvents.currentDate.getFullYear() === allday.dY)
-    {
-        updateDayEventsList(date)
     }
 }
 
 function updateDayEventsList(date)
 {
-
-    console.log(">> in updateDayEventsList " + date)
     var dayProperty = calculateDayProperty(date)
-
-    console.log(">> updateDayEventsList " + dayProperty)
 
     if (dayProperty === 100)
         return;
@@ -598,14 +639,11 @@ function updateDayEventsList(date)
 
 function deleteEvent(model)
 {
-    console.log(">> deleteEvent " + model.id)
-
     items.deleteItem(model.id,null)
 }
 
 function addOrModifyEvent(id,startDate,endDate,title,who)
 {
-    console.log(">> addEvent ")
     var o = {}
     o.id = id === "" ? generateKey() : id
     o.date = startDate.getFullYear() + "/" + startDate.getMonth() + "/" + startDate.getDate()
@@ -653,7 +691,6 @@ Zc.CrowdActivity
 
         onItemDeleted :
         {
-            console.log(">> onItemDeleted " + idItem)
             deleteItemFromItem(idItem)
 
             var dayProperty = mainView.calculateDayFromItem(idItem);
