@@ -124,8 +124,11 @@ OneEvent
         top : toolBar.bottom
         topMargin : 10
         bottom : parent.bottom
+        bottomMargin : 10
         left : parent.left
+        leftMargin : 5
         right : parent.right
+        rightMargin : 10
     }
 
     currentDate : dayEventsPanel.currentDate

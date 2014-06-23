@@ -50,7 +50,35 @@
         <Properties />
         <Items>
           <Item Template="QtResourceFile">
+            <QtResourceFile FileName="back.png">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
             <QtResourceFile FileName="close.png">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="editmode.png">
+              <Properties>
+                <BuildAction value="Compile" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="ok.png">
               <Properties>
                 <BuildAction value="Compile" />
                 <Locale value="" />
@@ -70,27 +98,7 @@
             </QtResourceFile>
           </Item>
           <Item Template="QtResourceFile">
-            <QtResourceFile FileName="back.png">
-              <Properties>
-                <BuildAction value="Compile" />
-                <Locale value="" />
-                <Alias value="" />
-              </Properties>
-              <Items />
-            </QtResourceFile>
-          </Item>
-          <Item Template="QtResourceFile">
-            <QtResourceFile FileName="ok.png">
-              <Properties>
-                <BuildAction value="Compile" />
-                <Locale value="" />
-                <Alias value="" />
-              </Properties>
-              <Items />
-            </QtResourceFile>
-          </Item>
-          <Item Template="QtResourceFile">
-            <QtResourceFile FileName="editmode.png">
+            <QtResourceFile FileName="icon.png">
               <Properties>
                 <BuildAction value="Compile" />
               </Properties>
@@ -104,6 +112,16 @@
       <QtResourceProjectFolder Name="Views">
         <Properties />
         <Items>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="DayEvents.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
           <Item Template="QtResourceFile">
             <QtResourceFile FileName="Main.js">
               <Properties>
@@ -125,36 +143,6 @@
             </QtResourceFile>
           </Item>
           <Item Template="QtResourceFile">
-            <QtResourceFile FileName="SplashScreen.qml">
-              <Properties>
-                <BuildAction value="Compile" />
-                <Locale value="" />
-                <Alias value="" />
-              </Properties>
-              <Items />
-            </QtResourceFile>
-          </Item>
-          <Item Template="QtResourceFile">
-            <QtResourceFile FileName="Tools.js">
-              <Properties>
-                <BuildAction value="Compile" />
-                <Locale value="" />
-                <Alias value="" />
-              </Properties>
-              <Items />
-            </QtResourceFile>
-          </Item>
-          <Item Template="QtResourceFile">
-            <QtResourceFile FileName="DayEvents.qml">
-              <Properties>
-                <BuildAction value="Compile" />
-                <Locale value="" />
-                <Alias value="" />
-              </Properties>
-              <Items />
-            </QtResourceFile>
-          </Item>
-          <Item Template="QtResourceFile">
             <QtResourceFile FileName="OneEvent.qml">
               <Properties>
                 <BuildAction value="Compile" />
@@ -166,6 +154,26 @@
           </Item>
           <Item Template="QtResourceFile">
             <QtResourceFile FileName="OnEventDelegate.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="SplashScreen.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="Tools.js">
               <Properties>
                 <BuildAction value="Compile" />
                 <Locale value="" />

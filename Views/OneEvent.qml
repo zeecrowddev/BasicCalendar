@@ -16,7 +16,7 @@ Item
 
         var who = id === "" ? mainView.context.nickname : oneEvent.who
 
-        mainView.addOrModifyEvent(id,startdate,enddate,title.text,who)
+        mainView.addOrModifyEvent(id,startdate,enddate,title.text,descriptionId.text,who)
     }
 
     function clear()
@@ -29,6 +29,7 @@ Item
         oneEvent.eM = 0
         oneEvent.eventTitle = ""
         oneEvent.who = ""
+        oneEvent.description = ""
     }
 
     function updateData(model)
@@ -39,13 +40,24 @@ Item
         oneEvent.sM = model.sM
         oneEvent.eH = model.eH
         oneEvent.eM = model.eM
-        oneEvent.eventTitle = model.title
+
+        if (model.title !== undefined && model.title !== null)
+            oneEvent.eventTitle = model.title
+        else
+            oneEvent.eventTitle = ""
+
+        if (model.description !== undefined && model.description !== null)
+            oneEvent.description = model.description
+        else
+            oneEvent.description = ""
+
     }
 
     property date currentDate : null
     property string id : ""
     property string who : ""
     property string eventTitle : ""
+    property string description : ""
     property int sH : 0
     property int sM : 0
     property int eH : 0
@@ -77,6 +89,7 @@ Item
                 anchors.verticalCenter: parent.verticalCenter
             }
 
+
             SpinBox
             {
                 id : startHour
@@ -86,7 +99,7 @@ Item
                 font.pixelSize: 20
 
                 minimumValue : 1
-                maximumValue : 12
+                maximumValue : 24
                 stepSize : 1
 
                 style : SpinBoxStyle{}
@@ -124,7 +137,7 @@ Item
 
                 minimumValue : 0
                 maximumValue : 60
-                stepSize : 1
+                stepSize : 15
 
                 style : SpinBoxStyle{}
 
@@ -156,6 +169,7 @@ Item
                 anchors.verticalCenter: parent.verticalCenter
             }
 
+
             SpinBox
             {
                 id : endHour
@@ -164,8 +178,8 @@ Item
 
                 font.pixelSize: 20
 
-                minimumValue : 1
-                maximumValue : 12
+                minimumValue : startHour.value
+                maximumValue : 24
                 stepSize : 1
 
                 style : SpinBoxStyle{}
@@ -198,7 +212,7 @@ Item
 
                 minimumValue : 0
                 maximumValue : 60
-                stepSize : 1
+                stepSize : 15
 
                 style : SpinBoxStyle{}
 
@@ -246,9 +260,32 @@ Item
                 text :  oneEvent.eventTitle
             }
         }
+
+        Label
+        {
+            id : labelDecription
+            height : 20
+            width : 60
+
+            font.pixelSize: 20
+            font.bold: true
+
+            text : "Description : "
+
+        }
+
+        TextArea
+        {
+            style: TextAreaStyle {}
+            id : descriptionId
+            height : 150
+            width : parent.width
+
+            font.pixelSize: 16
+            text :  oneEvent.description
+        }
+
     }
-
-
 
 
 }

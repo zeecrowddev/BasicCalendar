@@ -220,72 +220,6 @@ Zc.AppView
 
         }
 
-
-        //        Calendar {
-        //            id: calendar
-        //            width: parent.width * 0.6 - row.spacing / 2
-        //            height: parent.height
-        //            selectedDate: new Date(2014, 0, 1)
-        //            focus: true
-
-        ////            onVisibleMonthChanged:
-        ////            {
-        ////                calculateParameters()
-        ////                mainView.updateAll();
-        ////            }
-
-        ////            onVisibleYearChanged:
-        ////            {
-        ////                  calculateParameters()
-        ////                  mainView.updateAll();
-        ////            }
-
-        //            style: CalendarStyle {
-        //                dayDelegate: Item {
-        //                    readonly property color sameMonthDateTextColor: "#444"
-        //                    readonly property color selectedDateColor: Qt.platform.os === "osx" ? "#3778d0" : __syspal.highlight
-        //                    readonly property color selectedDateTextColor: "white"
-        //                    readonly property color differentMonthDateTextColor: "#bbb"
-        //                    readonly property color invalidDatecolor: "#dddddd"
-
-        //                    Rectangle {
-        //                        anchors.fill: parent
-        //                        border.color: "transparent"
-        //                        color: styleData.date !== undefined && styleData.selected ? selectedDateColor : "transparent"
-        //                        anchors.margins: styleData.selected ? -1 : 0
-        //                    }
-
-        //                    Image {
-        //                        visible: eventModel.eventsForDate(styleData.date).length > 0
-        //                        anchors.top: parent.top
-        //                        anchors.left: parent.left
-        //                        anchors.margins: -1
-        //                        width: 12
-        //                        height: width
-        //                        source: "qrc:/images/eventindicator.png"
-        //                    }
-
-        //                    Label {
-        //                        id: dayDelegateText
-        //                        text: styleData.date.getDate()
-        //                        font.pixelSize: 14
-        //                        anchors.centerIn: parent
-        //                        color: {
-        //                            var color = invalidDatecolor;
-        //                            if (styleData.valid) {
-        //                                // Date is within the valid range.
-        //                                color = styleData.visibleMonth ? sameMonthDateTextColor : differentMonthDateTextColor;
-        //                                if (styleData.selected) {
-        //                                    color = selectedDateTextColor;
-        //                                }
-        //                            }
-        //                            color;
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-
         Calendar
         {
             id : calendar
@@ -642,7 +576,7 @@ function deleteEvent(model)
     items.deleteItem(model.id,null)
 }
 
-function addOrModifyEvent(id,startDate,endDate,title,who)
+function addOrModifyEvent(id,startDate,endDate,title,description,who)
 {
     var o = {}
     o.id = id === "" ? generateKey() : id
@@ -652,9 +586,12 @@ function addOrModifyEvent(id,startDate,endDate,title,who)
     o.eH = endDate.getHours();
     o.eM = endDate.getMinutes();
     o.title = title
+    o.description = description;
 
 
     o.cU = id === "" ? mainView.context.nickname : who
+
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>> setitem " + JSON.stringify(o))
 
     items.setItem(o.id,JSON.stringify(o),null)
 }
