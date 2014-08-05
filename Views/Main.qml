@@ -1,7 +1,7 @@
 /**
 * Copyright (c) 2010-2014 "Jabber Bees"
 *
-* This file is part of the Wywb application for the Zeecrowd platform.
+* This file is part of the BasicCalendar application for the Zeecrowd platform.
 *
 * Zeecrowd is an online collaboration platform [http://www.zeecrowd.com]
 *
@@ -24,6 +24,7 @@ import QtQuick.Dialogs 1.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.1
 
 import ZcClient 1.0 as Zc
 
@@ -74,6 +75,7 @@ Zc.AppView
     property string _36 : ""
     property string _37 : ""
     property string _38 : ""
+
     property string _39 : ""
     property string _40 : ""
     property string _41 : ""
@@ -548,8 +550,16 @@ function updateDayPropertyFromItem(idItem)
                 dayEvents.currentDate.getMonth() === allday.dM &&
                 dayEvents.currentDate.getFullYear() === allday.dY)
         {
+            // on met à jour la liste des events à cette date si c'est celle courant
             updateDayEventsList(date)
+
+            // Si on est en train d'editer cette date : o nla met à jour
+            if (dayEvents.state === "oneevent")
+            {
+                dayEvents.updateOneEventData(o)
+            }
         }
+
     }
     catch(e)
     {
@@ -571,13 +581,70 @@ function updateDayEventsList(date)
 
 
 
-function deleteEvent(model)
+function deleteEvent(modelElement)
 {
-    items.deleteItem(model.id,null)
+    if (modelElement.attachedFiles !== null || modelElement.attachedFiles !== undefined)
+    {
+        Tools.forEachInArray(modelElement.attachedFiles, function(x) { documentFolder.deleteFile(modelElement.id + "/" + x,null) })
+    }
+    // quand cela sera implémenté coté serveur
+    //   documentFolder.deleteFile(modelElement.id + "/uploads/",null)
+    //   documentFolder.deleteFile(modelElement.id + "/",null)
+    items.deleteItem(modelElement.id,null)
+}
+
+
+function addRessoureOnEvent(id,idRessource,pathToUpload)
+{
+    uploadScreenId.visible = true;
+    uploadScreenId.idItem = id;
+    uploadScreenId.resourceName = idRessource;
+
+    if (!documentFolder.uploadFile(id + "/" + idRessource,pathToUpload,queryStatusForAddRessourceDocumentFolder))
+        uploadScreenId.visible = false;
+}
+
+function deleteRessourceOnEvent(id,idRessource)
+{
+    deleteScreenId.visible = true;
+    deleteScreenId.idItem = id;
+    deleteScreenId.resourceName = idRessource;
+
+    if (!documentFolder.deleteFile(id + "/" + idRessource,queryStatusForDeleteRessourceDocumentFolder))
+        deleteScreenId.visible = false;
+}
+
+function saveAsRessourceOnEvent(id,idRessource)
+{
+    downloadScreenId.visible = true;
+    downloadScreenId.idItem = id;
+    downloadScreenId.idRessource = idRessource;
+    downloadScreenId.fullPath = id + "/" + idRessource;
+    downloadScreenId.open = false;
+
+    fileDialog.title = "Save " + idRessource + " on : "
+
+    fileDialog.folder = idRessource;
+    fileDialog.open()
+
+}
+
+
+function openRessourceOnEvent(id,idRessource)
+{
+    downloadScreenId.visible = true;
+    downloadScreenId.idItem = id;
+    downloadScreenId.idRessource = idRessource;
+    downloadScreenId.fullPath = mainView.context.temporaryPath + idRessource
+    downloadScreenId.open = true;
+
+    if (!documentFolder.downloadFileTo(id + "/" + idRessource,mainView.context.temporaryPath + idRessource,queryStatusForDownloadRessourceDocumentFolder))
+        downloadScreenId.visible = false;
 }
 
 function addOrModifyEvent(id,startDate,endDate,title,description,who)
 {
+
     var o = {}
     o.id = id === "" ? generateKey() : id
     o.date = startDate.getFullYear() + "/" + startDate.getMonth() + "/" + startDate.getDate()
@@ -591,7 +658,19 @@ function addOrModifyEvent(id,startDate,endDate,title,description,who)
 
     o.cU = id === "" ? mainView.context.nickname : who
 
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>> setitem " + JSON.stringify(o))
+    if (id !== "")
+    {
+        var existingItem = items.getItem(id,"")
+        if (existingItem!=="")
+        {
+            var existingItemElement = Tools.parseDatas(existingItem)
+            if (existingItemElement.attachedFiles !== undefined)
+            {
+                o.attachedFiles = existingItemElement.attachedFiles
+            }
+        }
+    }
+
 
     items.setItem(o.id,JSON.stringify(o),null)
 }
@@ -635,6 +714,102 @@ Zc.CrowdActivity
     }
 
 
+    Zc.CrowdSharedResource
+    {
+        id   : documentFolder
+        name : "BasicCalendar"
+
+        Zc.StorageQueryStatus
+        {
+            id : queryStatusForAddRessourceDocumentFolder
+
+            onErrorOccured :
+            {
+                uploadScreenId.visible = false
+            }
+
+            onProgress :
+            {
+                uploadScreenId.progressValue = value
+            }
+
+            onCompleted :
+            {
+
+                var str = items.getItem(uploadScreenId.idItem,"")
+                if (str === "")
+                    return;
+
+                var element = Tools.parseDatas(str);
+
+                if (element.attachedFiles === null || element.attachedFiles === undefined)
+                    element.attachedFiles = [];
+
+                element.attachedFiles.push(uploadScreenId.resourceName)
+
+                items.setItem(element.id,JSON.stringify(element),null)
+
+                uploadScreenId.visible = false;
+            }
+        }
+
+        Zc.StorageQueryStatus
+        {
+            id : queryStatusForDownloadRessourceDocumentFolder
+
+            onErrorOccured :
+            {
+                downloadScreenId.visible = false;
+            }
+
+            onProgress :
+            {
+                downloadScreenId.progressValue = value
+            }
+
+
+
+            onCompleted :
+            {
+                if (downloadScreenId.open)
+                {
+                    Qt.openUrlExternally(downloadScreenId.fullPath)
+                }
+                downloadScreenId.visible = false;
+            }
+        }
+
+
+        Zc.QueryStatus
+        {
+            id : queryStatusForDeleteRessourceDocumentFolder
+
+            onErrorOccured :
+            {
+                deleteScreenId.visible = false;
+            }
+
+            onCompleted :
+            {
+                var str = items.getItem(deleteScreenId.idItem,"")
+                if (str === "")
+                    return;
+
+                var element = Tools.parseDatas(str);
+
+                if (element.attachedFiles === null || element.attachedFiles === undefined)
+                    element.attachedFiles = [];
+
+                Tools.removeInArray(element.attachedFiles , function (x) {return x === deleteScreenId.resourceName})
+
+                items.setItem(element.id,JSON.stringify(element),null)
+
+                deleteScreenId.visible = false;
+            }
+        }
+    }
+
+
     onStarted :
     {
         items.loadItems(itemQueryStatus);
@@ -663,4 +838,57 @@ SplashScreen
     height: parent.height
 }
 
+UploadScreen
+{
+    id : uploadScreenId
+    width : parent.width
+    height: parent.height
+    visible : false
+
+    z : 1000
 }
+
+DownloadScreen
+{
+    id : downloadScreenId
+    width : parent.width
+    height: parent.height
+    visible : false
+
+    z : 1000
+}
+
+DeleteScreen
+{
+    id : deleteScreenId
+    width : parent.width
+    height: parent.height
+    visible : false
+
+    z : 1000
+}
+
+FileDialog
+{
+    id: fileDialog
+
+    selectFolder   : true
+    selectMultiple : false
+
+    onRejected:
+    {
+        downloadScreenId.visible = false
+    }
+
+    onAccepted:
+    {
+        downloadScreenId.fullPath = folder + "/" + downloadScreenId.idRessource
+        if ( !documentFolder.downloadFileTo(downloadScreenId.idItem + "/" + downloadScreenId.idRessource,folder + "/" + downloadScreenId.idRessource,queryStatusForDownloadRessourceDocumentFolder))
+        {
+                downloadScreenId.visible = false;
+        }
+    }
+}
+
+}
+

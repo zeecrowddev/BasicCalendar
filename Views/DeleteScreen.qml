@@ -19,5 +19,41 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+import QtQuick 2.2
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 
-var instance = {}
+Item
+{
+    anchors.fill: parent
+
+    property double progressValue : 0
+
+    property string idItem  : ""
+    property string resourceName : ""
+
+    Rectangle
+    {
+        anchors.fill: parent
+        color : "grey"
+        opacity : 0.8
+    }
+
+
+    Item
+    {
+        height : 40
+        width : 300
+        anchors.centerIn: parent
+        Label
+        {
+            id : label
+            font.pixelSize:  40;
+            color : "white"
+            text : "Deleting  ..."
+        }
+    }
+
+
+}
+

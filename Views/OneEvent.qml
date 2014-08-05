@@ -1,6 +1,29 @@
+/**
+* Copyright (c) 2010-2014 "Jabber Bees"
+*
+* This file is part of the BasicCalendar application for the Zeecrowd platform.
+*
+* Zeecrowd is an online collaboration platform [http://www.zeecrowd.com]
+*
+* WebApp is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
+
+import "Tools.js" as Tools
 
 Item
 {
@@ -8,20 +31,18 @@ Item
     width: 100
     height: 62
 
+
     function validateEvent()
     {
-
         var startdate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),startHour.value,startMinute.value,0,0);
         var enddate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),endHour.value,endMinute.value,0,0);
-
-        var who = id === "" ? mainView.context.nickname : oneEvent.who
-
-        mainView.addOrModifyEvent(id,startdate,enddate,title.text,descriptionId.text,who)
+        var who = idItem === "" ? mainView.context.nickname : oneEvent.who
+        mainView.addOrModifyEvent(idItem,startdate,enddate,title.text,descriptionId.text,who)
     }
 
     function clear()
     {
-        oneEvent.id = ""
+        oneEvent.idItem = ""
         oneEvent.eventTitle = ""
         oneEvent.sH = 7
         oneEvent.sM = 0
@@ -34,7 +55,7 @@ Item
 
     function updateData(model)
     {
-        oneEvent.id = model.id
+        oneEvent.idItem = model.id
         oneEvent.who = model.cU
         oneEvent.sH = model.sH
         oneEvent.sM = model.sM
@@ -51,10 +72,22 @@ Item
         else
             oneEvent.description = ""
 
+        attachedFiles.clear();
+
+        if (model.attachedFiles !== null && model.attachedFiles !== undefined)
+        {
+           Tools.forEachInArray(model.attachedFiles, function (x) { attachedFiles.append({"name" : x}) })
+        }
+
+    }
+
+    ListModel
+    {
+        id : attachedFiles
     }
 
     property date currentDate : null
-    property string id : ""
+    property string idItem : ""
     property string who : ""
     property string eventTitle : ""
     property string description : ""
@@ -63,16 +96,18 @@ Item
     property int eH : 0
     property int eM : 0
 
+
+
     Column
     {
         anchors.fill: parent
 
-        spacing: 10
+        spacing: 5
 
         Row
         {
             spacing: 5
-            height : 40
+            height : 25
             width : parent.width
 
             Label
@@ -81,7 +116,7 @@ Item
                 height : 20
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
                 font.bold: true
 
                 text : "Start : "
@@ -93,10 +128,10 @@ Item
             SpinBox
             {
                 id : startHour
-                height : 40
+                height : 25
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
 
                 minimumValue : 1
                 maximumValue : 24
@@ -116,7 +151,7 @@ Item
                 width : 10
 
 
-                font.pixelSize: 20
+                font.pixelSize: 16
                 font.bold: true
 
                 text : ":"
@@ -130,10 +165,10 @@ Item
             {
                 id : startMinute
 
-                height : 40
+                height : 25
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
 
                 minimumValue : 0
                 maximumValue : 60
@@ -150,7 +185,7 @@ Item
 
         Row
         {
-            height : 40
+            height : 25
             width : parent.width
 
             spacing: 5
@@ -158,10 +193,10 @@ Item
             Label
             {
                 id : labelEnd
-                height : 20
+                height : 25
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
                 font.bold: true
 
                 text : "End : "
@@ -173,10 +208,10 @@ Item
             SpinBox
             {
                 id : endHour
-                height : 40
+                height : 25
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
 
                 minimumValue : startHour.value
                 maximumValue : 24
@@ -194,7 +229,7 @@ Item
                 height : 20
                 width : 10
 
-                font.pixelSize: 20
+                font.pixelSize: 16
                 font.bold: true
 
                 text : ":"
@@ -205,10 +240,10 @@ Item
             SpinBox
             {
                 id : endMinute
-                height : 40
+                height : 25
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
 
                 minimumValue : 0
                 maximumValue : 60
@@ -237,7 +272,7 @@ Item
                 height : 20
                 width : 60
 
-                font.pixelSize: 20
+                font.pixelSize: 16
                 font.bold: true
 
                 text : "Title : "
@@ -252,7 +287,7 @@ Item
                 height : 40
                 width : parent.width - labelTitle.width - 10
 
-                font.pixelSize: 20
+                font.pixelSize: 16
 
                 anchors.verticalCenter: parent.verticalCenter
 
@@ -267,7 +302,7 @@ Item
             height : 20
             width : 60
 
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.bold: true
 
             text : "Description : "
@@ -278,14 +313,52 @@ Item
         {
             style: TextAreaStyle {}
             id : descriptionId
-            height : 150
+            height : 80
             width : parent.width
 
             font.pixelSize: 16
             text :  oneEvent.description
         }
 
+        Label
+        {
+            id : attachedFilesId
+            height : 30
+            width : 60
+
+            font.pixelSize: 16
+            font.bold: true
+
+            text : "Attached Files : "
+
+        }
+
+        ScrollView
+        {
+            width : parent.width
+            height : 200
+
+            style :  ScrollViewStyle { transientScrollBars : false }
+
+            ListView
+            {
+
+                anchors.fill: parent
+
+                model : attachedFiles
+
+                delegate : AttachedFileDelegate
+                {
+                onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
+                onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
+            }
+
+            spacing: 5
+        }
     }
+
+
+}
 
 
 }

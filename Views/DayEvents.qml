@@ -1,7 +1,30 @@
+/**
+* Copyright (c) 2010-2014 "Jabber Bees"
+*
+* This file is part of the BasicCalendar application for the Zeecrowd platform.
+*
+* Zeecrowd is an online collaboration platform [http://www.zeecrowd.com]
+*
+* WebApp is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.1
+import ZcClient 1.0 as Zc
 
 Item
 {
@@ -13,6 +36,12 @@ Item
     state  : "allevents"
 
     property date currentDate : null
+    property bool isNew : false
+
+    Zc.ResourceDescriptor
+    {
+        id : zcResourceDescriptor
+    }
 
     Row {
         id: eventDateRow
@@ -52,6 +81,7 @@ Item
 
         anchors.top : eventDateRow.bottom
         anchors.topMargin : 5
+        width : parent.width
 
         style : ToolBarStyle{}
 
@@ -67,6 +97,8 @@ Item
                 onTriggered :
                 {
                     oneEventPanel.clear();
+
+                    isNew =  dayEventsPanel.state === "allevents" ? true : false
                     dayEventsPanel.state = dayEventsPanel.state === "allevents" ? "oneevent" : "allevents"
                 }
             }
@@ -75,12 +107,12 @@ Item
         ToolButton
         {
 
+            visible     : dayEventsPanel.state === "oneevent"
 
             action : Action
             {
             id : validate
-            iconSource  : dayEventsPanel.state === "oneevent" ?  "qrc:/BasicCalendar/Resources/ok.png" : ""
-            enabled     : dayEventsPanel.state === "oneevent"
+            iconSource  : "qrc:/BasicCalendar/Resources/ok.png"
             tooltip     : "Validate"
 
 
@@ -88,6 +120,24 @@ Item
             {
                 oneEventPanel.validateEvent();
                 dayEventsPanel.state = dayEventsPanel.state === "allevents" ? "oneevent" : "allevents"
+            }
+
+        }
+    }
+        ToolButton
+        {
+
+            visible : dayEventsPanel.state === "oneevent" && !isNew
+
+            action : Action
+            {
+            id : addRessource
+            iconSource  : "qrc:/BasicCalendar/Resources/addResource.png"
+            tooltip     : "AddRessource"
+
+            onTriggered :
+            {
+                fileDialog.open()
             }
 
         }
@@ -113,7 +163,18 @@ function updateEvents(date,dates)
     currentDate = date
     //currentDateLabel.text = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " "
     listView.model = dates;
+
 }
+
+/*
+** accés de l'exterieur
+*/
+
+function updateOneEventData(model)
+{
+    oneEventPanel.updateData(model)
+}
+
 
 OneEvent
 {
@@ -153,13 +214,32 @@ ListView
         right : parent.right
     }
 
-    delegate :  OnEventDelegate { onDeleteEvent: mainView.deleteEvent(model);
+    delegate :  OnEventDelegate { onDeleteEvent: {
+
+            mainView.deleteEvent(eventElement);
+        }
                                   onEditEvent:
                                     {
-                                        oneEventPanel.updateData(model)
+                                        isNew = false
+                                        oneEventPanel.updateData(eventElement)
                                         dayEventsPanel.state = "oneevent";
                                     }
                                 }
                 }
+
+
+FileDialog
+{
+    id: fileDialog
+
+    selectFolder   : false
+    selectMultiple : false
+
+    onAccepted:
+    {
+            zcResourceDescriptor.fromLocalFile(fileUrl);
+            mainView.addRessoureOnEvent(oneEventPanel.idItem,zcResourceDescriptor.name,fileUrl)
+    }
+}
 
 }

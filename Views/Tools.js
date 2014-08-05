@@ -1,7 +1,7 @@
 /**
 * Copyright (c) 2010-2014 "Jabber Bees"
 *
-* This file is part of the WebApp application for the Zeecrowd platform.
+* This file is part of the BasicCalendar application for the Zeecrowd platform.
 *
 * Zeecrowd is an online collaboration platform [http://www.zeecrowd.com]
 *

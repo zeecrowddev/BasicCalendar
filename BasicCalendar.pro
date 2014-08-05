@@ -5,5 +5,9 @@ OTHER_FILES += \
     Views/SplashScreen.qml \
     Views/DayEvents.qml \
     Views/OneEvent.qml \
-    Views/OnEventDelegate.qml
+    Views/OnEventDelegate.qml \
+    Views/UploadScreen.qml \
+    Views/AttachedFileDelegate.qml \
+    Views/DownloadScreen.qml \
+    Views/DeleteScreen.qml
    

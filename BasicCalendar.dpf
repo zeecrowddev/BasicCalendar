@@ -50,7 +50,27 @@
         <Properties />
         <Items>
           <Item Template="QtResourceFile">
+            <QtResourceFile FileName="addResource.png">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
             <QtResourceFile FileName="back.png">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="bin.png">
               <Properties>
                 <BuildAction value="Compile" />
                 <Locale value="" />
@@ -73,6 +93,18 @@
             <QtResourceFile FileName="editmode.png">
               <Properties>
                 <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="icon.png">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
               </Properties>
               <Items />
             </QtResourceFile>
@@ -98,7 +130,7 @@
             </QtResourceFile>
           </Item>
           <Item Template="QtResourceFile">
-            <QtResourceFile FileName="icon.png">
+            <QtResourceFile FileName="saveAs.png">
               <Properties>
                 <BuildAction value="Compile" />
               </Properties>
@@ -113,7 +145,37 @@
         <Properties />
         <Items>
           <Item Template="QtResourceFile">
+            <QtResourceFile FileName="AttachedFileDelegate.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
             <QtResourceFile FileName="DayEvents.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="DeleteScreen.qml">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="DownloadScreen.qml">
               <Properties>
                 <BuildAction value="Compile" />
                 <Locale value="" />
@@ -174,6 +236,16 @@
           </Item>
           <Item Template="QtResourceFile">
             <QtResourceFile FileName="Tools.js">
+              <Properties>
+                <BuildAction value="Compile" />
+                <Locale value="" />
+                <Alias value="" />
+              </Properties>
+              <Items />
+            </QtResourceFile>
+          </Item>
+          <Item Template="QtResourceFile">
+            <QtResourceFile FileName="UploadScreen.qml">
               <Properties>
                 <BuildAction value="Compile" />
                 <Locale value="" />
