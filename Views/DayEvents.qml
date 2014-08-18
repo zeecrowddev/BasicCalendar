@@ -38,6 +38,14 @@ Item
     property date currentDate : null
     property bool isNew : false
 
+    Rectangle
+    {
+        anchors.fill: parent
+        color : "lightgrey"
+        opacity : 0.8
+    }
+
+
     Zc.ResourceDescriptor
     {
         id : zcResourceDescriptor

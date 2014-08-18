@@ -111,6 +111,15 @@ function removeInArray(array, findDelegate)
 
 function forEachInArray(array, delegate)
 {
+    if (array === null)
+        return;
+
+    if (array === undefined)
+        return;
+
+    if (array.length === null ||array.length === undefined)
+        return;
+
     for (var i=0;i<array.length;i++)
     {
         delegate(array[i]);
