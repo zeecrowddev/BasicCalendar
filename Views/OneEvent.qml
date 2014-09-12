@@ -74,6 +74,10 @@ Item
             {
                 eventModel.repeatType = "EM"
             }
+            else if (rbEachDay.checked)
+            {
+                eventModel.repeatType = "ED"
+            }
             else
             {
                 eventModel.repeatType = ""
@@ -90,7 +94,8 @@ Item
 
     function eventModelToGraphique()
     {
-        console.log(">> eventModelToGraphique")
+        console.log(">> eventModelToGraphique " )
+        console.log(">> eventModelToGraphique eventModel.repeatType " + eventModel.repeatType )
         startHour.text = eventModel.startHour
         endHour.text = eventModel.endHour
         titleId.text = eventModel.title
@@ -112,6 +117,11 @@ Item
             if (eventModel.repeatType === "EM")
             {
                 rbEachMonth.checked = true;
+            }
+            else if (eventModel.repeatType === "ED")
+            {
+                rbEachDay.checked = true;
+
             }
         }
     }

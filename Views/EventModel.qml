@@ -97,7 +97,7 @@ Item
         var o = {}
         o.id = idItem === "" ? generateKey() : idItem
 
-        console.log(">> date " + date)
+        console.log(">> toJSObject date " + date)
 
         o.date = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
 

@@ -170,17 +170,28 @@ Zc.AppView
 
     function calculateParameters()
     {
+        console.log(">> calculateParameters ")
+        console.log(">> calculateParameters.visibleYear " + calendar.visibleYear)
+        console.log(">> calculateParameters.visibleMonth " + calendar.visibleMonth)
+
         clearDayProperties()
 
-        var date = new Date(calendar.visibleYear,calendar.visibleMonth,1,0,0,0,0);
+        var yy = calendar.visibleYear;
+        if (yy === 0)
+            yy = new Date().getFullYear();
+
+        var date = new Date(yy,calendar.visibleMonth,1,0,0,0,0);
         dayOfWeek = date.getDay();
         if (dayOfWeek === 0)
             dayOfWeek = 7
         else if (dayOfWeek === 1)
             dayOfWeek = 8
-        daysInMonth = Tools.days_in_month(date.getMonth() + 1,date.getFullYear());
+        daysInMonth = Tools.days_in_month(date.getMonth() + 1,yy);
         currentMonth = date.getMonth()
-        currentYear = date.getFullYear()
+
+
+        currentYear = yy
+        console.log(">> currentYear = " + currentYear)
     }
 
     function generateKey()
@@ -493,24 +504,38 @@ function deleteItemFromItem(idItem)
     }
 }
 
+/*
+** Supprimme dans toutes les dates visible les occurences
+** de l'idItem
+*/
 
 function clearItemDayProperties(idItem)
 {
+
+
     for (var i = 1;i <= 42;i++)
     {
         var allday = Tools.parseDatas(mainView["_" + i]);
 
         if (allday.dates === undefined || allday.dates === null)
-            continue
-
-        var found = Tools.indexInArray(allday.dates, function (x) { return x.id === idItem})
-
-        if (found !== -1)
         {
-            allday.dates[found] = null;
+            allday.dates = [];
         }
 
-        mainView["_" + dayProperty] = JSON.stringify(allday)
+        Tools.removeInArray(allday.dates,function (x) { return x.id === idItem})
+
+        mainView["_" + i] = JSON.stringify(allday)
+
+        console.log( " DD" + dayEvents.currentDate.getDate() + " <<>> "  + allday.dD )
+        console.log(" MM " + dayEvents.currentDate.getMonth() + " <<>> "  + allday.dM )
+        console.log(" YY " + dayEvents.currentDate.getFullYear() + " <<>> "  + allday.dY )
+
+        if (dayEvents.currentDate.getDate() === allday.dD &&
+                dayEvents.currentDate.getMonth() === allday.dM &&
+                dayEvents.currentDate.getFullYear() === allday.dY)
+        {
+            updateDayEventsList(dayEvents.currentDate)
+        }
     }
 }
 /*
@@ -518,7 +543,7 @@ function clearItemDayProperties(idItem)
 */
 function resolveOneEvent(o)
 {
-    console.log(">> resolveOneEvent --------------------- " + o.title)
+    console.log(">> resolveOneEvent --------------------- " + o.title + " " + o.date)
     var split = o.date.split("/");
 
     if ( split[0] === "NaN")
@@ -533,7 +558,7 @@ function resolveOneEvent(o)
 
     var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
 
-    console.log(">> date is " + date)
+    console.log(">>>>> date is " + date)
 
     var dayProperty = mainView.calculateDayProperty(date);
 
@@ -606,7 +631,7 @@ function updateDayPropertyFromItem(idItem)
         // on verrouille toujours l'id
         o.id = idItem
 
-        console.log(">> title " + title)
+        console.log(">> title " + o.title)
 
         var listObject = [];
 
@@ -614,31 +639,33 @@ function updateDayPropertyFromItem(idItem)
                 o.repeat.rT !== undefined && o.repeat.rt !== null)
         {
             console.log(">> REPEATTYPE of " + o.title + " " + o.repeat.rT)
+            console.log(">> currentMonth " + mainView.currentMonth)
+            console.log(">> currentYear " + mainView.currentYear)
+
+            console.log(">> o.date " + o.date)
+            var split = o.date.split("/");
+            var day = split[2]
+            if ( day === "NaN")
+                return;
+            var nMonth = currentMonth + 1
+            var pMonth = currentMonth - 1
+            var nYear = mainView.currentYear;
+            var pYear = mainView.currentYear;
+
+            if (pMonth === -1)
+            {
+                pMonth = 11
+                pYear = pYear - 1
+            }
+
+            if (nMonth == 12)
+            {
+                nMonth = 0
+                nYear = nYear + 1
+            }
 
             if (o.repeat.rT === "EM")
             {
-                console.log(">> o.date " + o.date)
-                var split = o.date.split("/");
-                var day = split[2]
-                if ( day === "NaN")
-                    return;
-                var nMonth = currentMonth + 1
-                var pMonth = currentMonth - 1
-                var nYear = currentYear;
-                var pYear = currentYear;
-
-                if (pMonth === -1)
-                {
-                    pMonth = 11
-                    pYear = pYear - 1
-                }
-
-                if (nMonth == 12)
-                {
-                    nMonth = 0
-                    nYear = nYear + 1
-                }
-
 
                 o.date = currentYear + "/" + currentMonth + "/" + day
                 console.log(">> o.date " + o.date)
@@ -656,6 +683,26 @@ function updateDayPropertyFromItem(idItem)
                 console.log(">> push " + nMonthObject.title + " " + nMonthObject.date)
                 listObject.push(nMonthObject)
             }
+            else  if (o.repeat.rT === "ED")
+            {
+
+                console.log(">> ED : curentYear " + currentYear)
+
+                for (var i = 0 ; i <= 31 ; i++)
+                {
+
+                    var ocDay = JSON.parse(JSON.stringify(o))
+                    ocDay.date = currentYear + "/" + currentMonth + "/" + i
+                    listObject.push(ocDay)
+                    var opDay = JSON.parse(JSON.stringify(o))
+                    opDay.date = pYear + "/" + pMonth + "/" + i
+                    listObject.push(opDay)
+                    var onDay = JSON.parse(JSON.stringify(o))
+                    onDay.date = nYear + "/" + nMonth + "/" + i
+                    listObject.push(onDay)
+                }
+            }
+
         }
         else
         {
@@ -674,6 +721,7 @@ function updateDayPropertyFromItem(idItem)
 
 function updateDayEventsList(date)
 {
+    console.log(">>>>> updateDayEventsList ")
     var dayProperty = calculateDayProperty(date)
 
     if (dayProperty === 100)
@@ -693,6 +741,8 @@ function deleteEvent(modelElement)
     // quand cela sera implémenté coté serveur
     //   documentFolder.deleteFile(modelElement.id + "/uploads/",null)
     //   documentFolder.deleteFile(modelElement.id + "/",null)
+   console.log(">> call items.deleteItem " + modelElement.id)
+
     items.deleteItem(modelElement.id,null)
 }
 
@@ -787,9 +837,14 @@ Zc.CrowdActivity
 
         onItemDeleted :
         {
-            deleteItemFromItem(idItem)
+            console.log(">>> onItemDeleted")
+            // on ne sait jamais c'etait peut etre un Repeater
+            // alors dans le doute on clean tout les jours
+            clearItemDayProperties(idItem);
 
-            var dayProperty = mainView.calculateDayFromItem(idItem);
+         //   deleteItemFromItem(idItem)
+
+        //    var dayProperty = mainView.calculateDayFromItem(idItem);
         }
     }
 

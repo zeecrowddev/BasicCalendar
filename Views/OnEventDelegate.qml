@@ -148,7 +148,7 @@ Rectangle
         tooltip     : "Edit"
         onTriggered :
         {
-        //    deleteEvent(modelData.id);
+            deleteEvent(modelData.id);
 
             editEvent(modelData);
             oneEventDelegate.state = "consultation"
