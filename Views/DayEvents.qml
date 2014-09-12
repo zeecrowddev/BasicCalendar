@@ -104,7 +104,7 @@ Item
                 tooltip     : dayEventsPanel.state === "allevents" ? "Add a date" : "Cancel"
                 onTriggered :
                 {
-                    oneEventPanel.clear();
+                    oneEventPanel.clearView();
 
                     isNew =  dayEventsPanel.state === "allevents" ? true : false
                     dayEventsPanel.state = dayEventsPanel.state === "allevents" ? "oneevent" : "allevents"
@@ -245,7 +245,10 @@ FileDialog
 
     onAccepted:
     {
+            console.log(">> accepted to upload " + oneEventPanel.idItem + " " + fileUrl)
             zcResourceDescriptor.fromLocalFile(fileUrl);
+            console.log(">> zcResourceDescriptor " + zcResourceDescriptor.name)
+
             mainView.addRessoureOnEvent(oneEventPanel.idItem,zcResourceDescriptor.name,fileUrl)
     }
 }

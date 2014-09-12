@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/BasicCalendar">
+        <file>Packages/BasicCalendar.cfg</file>
+        <file>Resources/addResource.png</file>
+        <file>Resources/back.png</file>
+        <file>Resources/bin.png</file>
+        <file>Resources/close.png</file>
+        <file>Resources/editmode.png</file>
+        <file>Resources/icon.png</file>
+        <file>Resources/ok.png</file>
+        <file>Resources/plus.png</file>
+        <file>Resources/saveAs.png</file>
+        <file>Views/AttachedFileDelegate.qml</file>
+        <file>Views/DayEvents.qml</file>
+        <file>Views/DeleteScreen.qml</file>
+        <file>Views/DownloadScreen.qml</file>
+        <file>Views/Main.js</file>
+        <file>Views/Main.qml</file>
+        <file>Views/OneEvent.qml</file>
+        <file>Views/OnEventDelegate.qml</file>
+        <file>Views/SplashScreen.qml</file>
+        <file>Views/Tools.js</file>
+        <file>Views/UploadScreen.qml</file>
+        <file>BasicCalendar.zeeapmanifest</file>
+        <file>Views/EventModel.qml</file>
+        <file>Views/DateWidget.qml</file>
+        <file>Views/DaySelector.qml</file>
+        <file>Views/TimeWidget.qml</file>
+    </qresource>
+</RCC>

@@ -41,10 +41,14 @@ Item {
     Label
     {
         height : 20
-        width : parent.width - 35
+        width : parent.width - 66
         anchors.verticalCenter: parent.verticalCenter
 
+        font.pixelSize: 12
         text : "<a href=\" \">"+modelData+"</a>"
+
+        clip : true
+        elide : Text.ElideRight
 
         onLinkActivated:
         {

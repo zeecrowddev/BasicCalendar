@@ -120,6 +120,7 @@ Zc.AppView
     property int dayOfWeek : 0;
     property int daysInMonth : 0;
     property int currentMonth : 0;
+    property int currentYear : 0;
 
     function updateAll()
     {
@@ -179,6 +180,7 @@ Zc.AppView
             dayOfWeek = 8
         daysInMonth = Tools.days_in_month(date.getMonth() + 1,date.getFullYear());
         currentMonth = date.getMonth()
+        currentYear = date.getFullYear()
     }
 
     function generateKey()
@@ -491,75 +493,178 @@ function deleteItemFromItem(idItem)
     }
 }
 
-function updateDayPropertyFromItem(idItem)
+
+function clearItemDayProperties(idItem)
 {
-    try
+    for (var i = 1;i <= 42;i++)
     {
-        var stro = items.getItem(idItem,"{}")
-
-        var o = Tools.parseDatas(stro);
-
-        if (o.date === undefined || o.date === null || o.date === "")
-            return;
-
-        // on vérouille toujours l'id
-        o.id = idItem
-
-        var split = o.date.split("/");
-
-        if ( split[0] === "NaN")
-            return;
-        if ( split[1] === "NaN")
-            return;
-        if ( split[2] === "NaN")
-            return;
-
-        var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
-
-        var dayProperty = mainView.calculateDayProperty(date);
-
-        if (dayProperty === 100)
-            return;
-
-
-        var allday = Tools.parseDatas(mainView["_" + dayProperty]);
+        var allday = Tools.parseDatas(mainView["_" + i]);
 
         if (allday.dates === undefined || allday.dates === null)
-        {
-            allday.dates = [];
-        }
-
-        allday.dY = date.getFullYear()
-        allday.dM = date.getMonth()
-        allday.dD = date.getDate()
+            continue
 
         var found = Tools.indexInArray(allday.dates, function (x) { return x.id === idItem})
 
         if (found !== -1)
         {
-            allday.dates[found] = o;
-        }
-        else
-        {
-            allday.dates.push(o);
+            allday.dates[found] = null;
         }
 
         mainView["_" + dayProperty] = JSON.stringify(allday)
+    }
+}
+/*
+** Determine si un event unitaire doit être ajouté au calendrier visible
+*/
+function resolveOneEvent(o)
+{
+    console.log(">> resolveOneEvent --------------------- " + o.title)
+    var split = o.date.split("/");
 
-        if (dayEvents.currentDate.getDate() === allday.dD &&
-                dayEvents.currentDate.getMonth() === allday.dM &&
-                dayEvents.currentDate.getFullYear() === allday.dY)
+    if ( split[0] === "NaN")
+        return;
+    if ( split[1] === "NaN")
+        return;
+    if ( split[2] === "NaN")
+        return;
+
+    console.log(">> resolveOneEvent : date ok : " + o.date)
+
+
+    var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
+
+    console.log(">> date is " + date)
+
+    var dayProperty = mainView.calculateDayProperty(date);
+
+    console.log(">> updateDayPropertyFromItem dayProperty " + dayProperty)
+
+    if (dayProperty === 100)
+        return;
+
+    var allday = Tools.parseDatas(mainView["_" + dayProperty]);
+
+    if (allday.dates === undefined || allday.dates === null)
+    {
+        allday.dates = [];
+    }
+
+    allday.dY = date.getFullYear()
+    allday.dM = date.getMonth()
+    allday.dD = date.getDate()
+
+    var found = Tools.indexInArray(allday.dates, function (x) { return x.id === o.id})
+
+    if (found !== -1)
+    {
+        allday.dates[found] = o;
+    }
+    else
+    {
+        allday.dates.push(o);
+    }
+
+    mainView["_" + dayProperty] = JSON.stringify(allday)
+
+    if (dayEvents.currentDate.getDate() === allday.dD &&
+            dayEvents.currentDate.getMonth() === allday.dM &&
+            dayEvents.currentDate.getFullYear() === allday.dY)
+    {
+        // on met à jour la liste des events à cette date si c'est celle courant
+        updateDayEventsList(date)
+
+        // Si on est en train d'editer cette date : o nla met à jour
+        if (dayEvents.state === "oneevent")
         {
-            // on met à jour la liste des events à cette date si c'est celle courant
-            updateDayEventsList(date)
+            dayEvents.updateOneEventData(o)
+        }
+    }
+}
 
-            // Si on est en train d'editer cette date : o nla met à jour
-            if (dayEvents.state === "oneevent")
+/*
+** recuperation d'un item
+** résolution des repeats
+**     call resolveOneEvent
+*/
+
+function updateDayPropertyFromItem(idItem)
+{
+    try
+    {
+        console.log(">> updateDayPropertyFromItem")
+
+        // Le Json en string
+        var stro = items.getItem(idItem,"{}")
+
+
+        // le Json en objet
+        var o = Tools.parseDatas(stro);
+        // Pas de date associé : on peut rien faire
+        if (o.date === undefined || o.date === null || o.date === "")
+            return;
+
+        // on verrouille toujours l'id
+        o.id = idItem
+
+        console.log(">> title " + title)
+
+        var listObject = [];
+
+        if (o.repeat !== null && o.repeat !== undefined && o.repeat.rT !== "" &&
+                o.repeat.rT !== undefined && o.repeat.rt !== null)
+        {
+            console.log(">> REPEATTYPE of " + o.title + " " + o.repeat.rT)
+
+            if (o.repeat.rT === "EM")
             {
-                dayEvents.updateOneEventData(o)
+                console.log(">> o.date " + o.date)
+                var split = o.date.split("/");
+                var day = split[2]
+                if ( day === "NaN")
+                    return;
+                var nMonth = currentMonth + 1
+                var pMonth = currentMonth - 1
+                var nYear = currentYear;
+                var pYear = currentYear;
+
+                if (pMonth === -1)
+                {
+                    pMonth = 11
+                    pYear = pYear - 1
+                }
+
+                if (nMonth == 12)
+                {
+                    nMonth = 0
+                    nYear = nYear + 1
+                }
+
+
+                o.date = currentYear + "/" + currentMonth + "/" + day
+                console.log(">> o.date " + o.date)
+                var pMonthObject = JSON.parse(JSON.stringify(o))
+                pMonthObject.date = pYear + "/" + pMonth + "/" + day
+                console.log(">> pMonthObject.date " + pMonthObject.date)
+                var nMonthObject = JSON.parse(JSON.stringify(o))
+                nMonthObject.date = nYear + "/" + nMonth + "/" + day
+                console.log(">> nMonthObject.date " + nMonthObject.date)
+
+                console.log(">> push " + o.title + " " + o.date)
+                listObject.push(o)
+                console.log(">> push " + pMonthObject.title + " " + pMonthObject.date)
+                listObject.push(pMonthObject)
+                console.log(">> push " + nMonthObject.title + " " + nMonthObject.date)
+                listObject.push(nMonthObject)
             }
         }
+        else
+        {
+            listObject.push(o);
+        }
 
+        clearItemDayProperties(o.id)
+
+        Tools.forEachInArray(listObject, function (x) { resolveOneEvent(x) } )
     }
     catch(e)
     {
@@ -578,8 +683,6 @@ function updateDayEventsList(date)
 
     dayEvents.updateEvents(date,o.dates)
 }
-
-
 
 function deleteEvent(modelElement)
 {
@@ -642,37 +745,14 @@ function openRessourceOnEvent(id,idRessource)
         downloadScreenId.visible = false;
 }
 
-function addOrModifyEvent(id,startDate,endDate,title,description,who)
+function addOrModifyEvent(eventModel)
 {
-
-    var o = {}
-    o.id = id === "" ? generateKey() : id
-    o.date = startDate.getFullYear() + "/" + startDate.getMonth() + "/" + startDate.getDate()
-    o.sH = startDate.getHours();
-    o.sM = startDate.getMinutes();
-    o.eH = endDate.getHours();
-    o.eM = endDate.getMinutes();
-    o.title = title
-    o.description = description;
-
-
-    o.cU = id === "" ? mainView.context.nickname : who
-
-    if (id !== "")
-    {
-        var existingItem = items.getItem(id,"")
-        if (existingItem!=="")
-        {
-            var existingItemElement = Tools.parseDatas(existingItem)
-            if (existingItemElement.attachedFiles !== undefined)
-            {
-                o.attachedFiles = existingItemElement.attachedFiles
-            }
-        }
-    }
-
-
-    items.setItem(o.id,JSON.stringify(o),null)
+    console.log(">> addOrModifyEvent")
+    // convertit le model en object JavaScriptScript
+    // en recuperant la liste existante de fichiers attachés
+    var jsObject = eventModel.toJSObject(mainView.context.nickname,items.getItem(eventModel.id,""))
+    // On met à jour tout le temps
+    items.setItem(jsObject.id,JSON.stringify(jsObject),null)
 }
 
 Zc.CrowdActivity
@@ -702,7 +782,7 @@ Zc.CrowdActivity
 
         onItemChanged :
         {
-            updateDayPropertyFromItem(idItem)
+           updateDayPropertyFromItem(idItem)
         }
 
         onItemDeleted :

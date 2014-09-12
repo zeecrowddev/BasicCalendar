@@ -32,71 +32,104 @@ Item
     height: 62
 
 
-    function validateEvent()
+    EventModel
     {
-        var startdate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),startHour.value,startMinute.value,0,0);
-        var enddate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate(),endHour.value,endMinute.value,0,0);
-        var who = idItem === "" ? mainView.context.nickname : oneEvent.who
-        mainView.addOrModifyEvent(idItem,startdate,enddate,title.text,descriptionId.text,who)
+        id : eventModel;
     }
 
-    function clear()
+    property alias idItem: eventModel.idItem
+
+    /*
+    ** On valide un event
+    */
+    function validateEvent()
     {
-        oneEvent.idItem = ""
-        oneEvent.eventTitle = ""
-        oneEvent.sH = 7
-        oneEvent.sM = 0
-        oneEvent.eH = 8
-        oneEvent.eM = 0
-        oneEvent.eventTitle = ""
-        oneEvent.who = ""
-        oneEvent.description = ""
+
+        graphiqueToEventModel();
+        console.log(">> validateEvent call addOrModifyEvent " + eventModel.startHour + " " + startHour.text )
+        mainView.addOrModifyEvent(eventModel)
+    }
+
+    function clearView()
+    {
+        console.log(">> clearView ")
+        eventModel.clear()
+        eventModel.date = currentDate;
+        eventModelToGraphique()
+    }
+
+    function graphiqueToEventModel()
+    {
+        console.log(">> graphiqueToEventModel " + startHourValue + " " + endHourValue + " tv " + titleId.text + " dv " + descriptionId.text)
+        eventModel.startHour = startHour.text;
+        eventModel.endHour = endHour.text;
+        eventModel.title = titleId.text
+        eventModel.description = descriptionId.text
+
+        console.log(">> graphiqueToEventModel gbRepeat.checked " + gbRepeat.checked)
+
+        if (gbRepeat.checked)
+        {
+            if (rbEachMonth.checked)
+            {
+                eventModel.repeatType = "EM"
+            }
+            else
+            {
+                eventModel.repeatType = ""
+            }
+        }
+        else
+        {
+            eventModel.repeatType = ""
+        }
+
+        console.log(">> graphiqueToEventModel eventModel.repeatType " + eventModel.repeatType)
+
+    }
+
+    function eventModelToGraphique()
+    {
+        console.log(">> eventModelToGraphique")
+        startHour.text = eventModel.startHour
+        endHour.text = eventModel.endHour
+        titleId.text = eventModel.title
+        descriptionId.text = eventModel.description
+        attachedFilesListId.model = null
+        attachedFilesListId.model = eventModel.attachedFiles
+
+        if (eventModel.repeatType === "")
+        {
+            gbRepeat.checked = false
+            rbEachDay.checked = false;
+            rbEachMonth.checked = false;
+            rbEachYear.checked = false;
+            rbEachWeekDay.checked = false;
+        }
+        else
+        {
+            gbRepeat.checked = true
+            if (eventModel.repeatType === "EM")
+            {
+                rbEachMonth.checked = true;
+            }
+        }
     }
 
     function updateData(model)
     {
-        oneEvent.idItem = model.id
-        oneEvent.who = model.cU
-        oneEvent.sH = model.sH
-        oneEvent.sM = model.sM
-        oneEvent.eH = model.eH
-        oneEvent.eM = model.eM
-
-        if (model.title !== undefined && model.title !== null)
-            oneEvent.eventTitle = model.title
-        else
-            oneEvent.eventTitle = ""
-
-        if (model.description !== undefined && model.description !== null)
-            oneEvent.description = model.description
-        else
-            oneEvent.description = ""
-
-        attachedFiles.clear();
-
-        if (model.attachedFiles !== null && model.attachedFiles !== undefined)
-        {
-           Tools.forEachInArray(model.attachedFiles, function (x) { attachedFiles.append({"name" : x}) })
-        }
-
+        eventModel.fromJSObject(model)
+        eventModelToGraphique();
     }
 
-    ListModel
-    {
-        id : attachedFiles
-    }
 
     property date currentDate : null
-    property string idItem : ""
-    property string who : ""
-    property string eventTitle : ""
-    property string description : ""
-    property int sH : 0
-    property int sM : 0
-    property int eH : 0
-    property int eM : 0
 
-
+    // Propriété bindée avec le graphique
+    property alias startHourValue : startHour.text
+    property alias endHourValue : endHour.text
+    property string titleValue : titleId.text
+    property string descriptionValue : descriptionId.text
 
     Column
     {
@@ -107,172 +140,17 @@ Item
         Row
         {
             spacing: 5
-            height : 25
-            width : parent.width
 
-            Label
-            {
-                id : labelStart
-                height : 20
-                width : 60
-
-                font.pixelSize: 16
-                font.bold: true
-
-                text : "Start : "
-
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-
-            SpinBox
-            {
-                id : startHour
-                height : 25
-                width : 60
-
-                font.pixelSize: 16
-
-                minimumValue : 1
-                maximumValue : 24
-                stepSize : 1
-
-                style : SpinBoxStyle{}
-
-                anchors.verticalCenter: parent.verticalCenter
-
-                value :  oneEvent.sH
-            }
-
-            Label
-            {
-                id : separtor
-                height : 20
-                width : 10
-
-
-                font.pixelSize: 16
-                font.bold: true
-
-                text : ":"
-
-                verticalAlignment: Text.AlignHCenter
-
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            SpinBox
-            {
-                id : startMinute
-
-                height : 25
-                width : 60
-
-                font.pixelSize: 16
-
-                minimumValue : 0
-                maximumValue : 60
-                stepSize : 15
-
-                style : SpinBoxStyle{}
-
-                anchors.verticalCenter: parent.verticalCenter
-
-                value :  oneEvent.sM
-            }
-
-        }
-
-        Row
-        {
-            height : 25
-            width : parent.width
-
-            spacing: 5
-
-            Label
-            {
-                id : labelEnd
-                height : 25
-                width : 60
-
-                font.pixelSize: 16
-                font.bold: true
-
-                text : "End : "
-
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-
-            SpinBox
-            {
-                id : endHour
-                height : 25
-                width : 60
-
-                font.pixelSize: 16
-
-                minimumValue : startHour.value
-                maximumValue : 24
-                stepSize : 1
-
-                style : SpinBoxStyle{}
-
-                anchors.verticalCenter: parent.verticalCenter
-
-                value :  oneEvent.eH
-            }
-
-            Label
-            {
-                height : 20
-                width : 10
-
-                font.pixelSize: 16
-                font.bold: true
-
-                text : ":"
-
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            SpinBox
-            {
-                id : endMinute
-                height : 25
-                width : 60
-
-                font.pixelSize: 16
-
-                minimumValue : 0
-                maximumValue : 60
-                stepSize : 15
-
-                style : SpinBoxStyle{}
-
-                anchors.verticalCenter: parent.verticalCenter
-
-                value :  oneEvent.eM
-            }
-
-
-        }
-
-        Row
-        {
-            spacing: 5
-
-            height : 40
+            height : 20
             width : parent.width
 
             Label
             {
                 id : labelTitle
-                height : 20
-                width : 60
+                height : 14
+                width : 40
 
-                font.pixelSize: 16
+                font.pixelSize: 12
                 font.bold: true
 
                 text : "Title : "
@@ -283,18 +161,204 @@ Item
             TextField
             {
                 style: TextFieldStyle {}
-                id : title
-                height : 40
+                id : titleId
+                height : 20
+
+//                text: titleValue
+
                 width : parent.width - labelTitle.width - 10
 
-                font.pixelSize: 16
+                font.pixelSize: 12
 
                 anchors.verticalCenter: parent.verticalCenter
 
-
-                text :  oneEvent.eventTitle
             }
         }
+
+        Row
+        {
+            spacing: 5
+            height : 20
+            width : parent.width
+
+            Label
+            {
+                id : labelStart
+                height : 14
+                width : 40
+
+                font.pixelSize: 12
+                font.bold: true
+
+                text : "Start : "
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            TimeWidget
+            {
+                id : startHour
+                height : 20
+                width : 45
+
+                anchors.verticalCenter: parent.verticalCenter
+
+            //    text : startHourValue
+            }
+
+            Label
+            {
+                id : labelTo
+                height : 14
+                width : 21
+
+                font.pixelSize: 12
+                font.bold: true
+
+                text : " to "
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            TimeWidget
+            {
+                id : endHour
+                height : 20
+                width : 45
+
+                anchors.verticalCenter: parent.verticalCenter
+
+               // text : endHourValue
+
+
+            }
+        }
+
+        // Repeat
+        GroupBox
+        {
+            id: gbRepeat
+            width : parent.width
+            height: 112
+            title: "Repeat"
+            flat: false
+            checkable: true
+            checked: false
+
+            Column
+            {
+                id : columnRbRepeat
+
+                width : 140
+                height : parent.height
+                clip : true
+                ExclusiveGroup { id: repeatGroup }
+
+                spacing: 2
+
+                RadioButton {
+                    id: rbEachDay
+                    text: qsTr("Every Day")
+                    exclusiveGroup: repeatGroup
+                    style : RadioButtonStyle {}
+                }
+                RadioButton {
+                    id: rbEachWeekDay
+                    text: qsTr("Every Week Day")
+                    style : RadioButtonStyle {}
+                    exclusiveGroup: repeatGroup
+                }
+                RadioButton {
+                    id: rbEachMonth
+                    text: qsTr("Every Month")
+                    style : RadioButtonStyle {}
+                    exclusiveGroup: repeatGroup
+                }
+                RadioButton {
+                    id: rbEachYear
+                    text: qsTr("Every Year")
+                    style : RadioButtonStyle {}
+                    exclusiveGroup: repeatGroup
+                }
+
+            }
+
+            GroupBox
+            {
+                id : gbDaysSelector
+                width: 137
+                height: 91
+
+                title: "Period"
+
+                checkable: true
+                checked: false
+
+                anchors.left  : columnRbRepeat.right
+                anchors.top   : parent.top
+                anchors.bottom: parent.bottom
+
+                Column
+                {
+                    anchors.fill: parent
+                    spacing : 2
+
+                    Row
+                    {
+                        width : parent.width
+                        height : 20
+
+                        Label
+                        {
+                            id : labelBegin
+                            height : 18
+                            width : 37
+
+                            font.pixelSize: 12
+                            font.bold: true
+
+                            text : "Begin"
+
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DateWidget
+                        {
+                            height : 20
+                            width : 82
+                        }
+                    }
+                    Row
+                    {
+                        width : parent.width
+                        height : 20
+
+                        Label
+                        {
+                            id : labelEnd
+                            height : 14
+                            width : 37
+
+                            font.pixelSize: 12
+                            font.bold: true
+
+                            text : "End"
+
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        DateWidget
+                        {
+                            height : 20
+                            width : 82
+                        }
+                    }
+                }
+
+            }
+
+        }
+
 
         Label
         {
@@ -302,11 +366,10 @@ Item
             height : 20
             width : 60
 
-            font.pixelSize: 16
+            font.pixelSize: 12
             font.bold: true
 
             text : "Description : "
-
         }
 
         TextArea
@@ -316,8 +379,8 @@ Item
             height : 80
             width : parent.width
 
-            font.pixelSize: 16
-            text :  oneEvent.description
+            font.pixelSize: 12
+            //text :  descriptionValue
         }
 
         Label
@@ -326,7 +389,7 @@ Item
             height : 30
             width : 60
 
-            font.pixelSize: 16
+            font.pixelSize: 12
             font.bold: true
 
             text : "Attached Files : "
@@ -343,22 +406,286 @@ Item
             ListView
             {
 
+                id : attachedFilesListId
+
                 anchors.fill: parent
 
-                model : attachedFiles
+//                model : eventModel.attachedFiles
 
                 delegate : AttachedFileDelegate
                 {
-                onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
-                onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
-            }
+                    onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
+                    onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
+                }
 
-            spacing: 5
+                spacing: 5
+            }
         }
-    }
 
 
 }
+
+//    Column
+//    {
+//        anchors.fill: parent
+
+//        spacing: 5
+
+//        Row
+//        {
+//            spacing: 5
+//            height : 25
+//            width : parent.width
+
+//            Label
+//            {
+//                id : labelStart
+//                height : 20
+//                width : 60
+
+//                font.pixelSize: 16
+//                font.bold: true
+
+//                text : "Start : "
+
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+
+//            SpinBox
+//            {
+//                id : startHour
+//                height : 25
+//                width : 60
+
+//                font.pixelSize: 16
+
+//                minimumValue : 1
+//                maximumValue : 24
+//                stepSize : 1
+
+//                style : SpinBoxStyle{}
+
+//                anchors.verticalCenter: parent.verticalCenter
+
+//                value :  oneEvent.sH
+//            }
+
+//            Label
+//            {
+//                id : separtor
+//                height : 20
+//                width : 10
+
+
+//                font.pixelSize: 16
+//                font.bold: true
+
+//                text : ":"
+
+//                verticalAlignment: Text.AlignHCenter
+
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+//            SpinBox
+//            {
+//                id : startMinute
+
+//                height : 25
+//                width : 60
+
+//                font.pixelSize: 16
+
+//                minimumValue : 0
+//                maximumValue : 60
+//                stepSize : 15
+
+//                style : SpinBoxStyle{}
+
+//                anchors.verticalCenter: parent.verticalCenter
+
+//                value :  oneEvent.sM
+//            }
+
+//        }
+
+//        Row
+//        {
+//            height : 25
+//            width : parent.width
+
+//            spacing: 5
+
+//            Label
+//            {
+//                id : labelEnd
+//                height : 25
+//                width : 60
+
+//                font.pixelSize: 16
+//                font.bold: true
+
+//                text : "End : "
+
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+
+//            SpinBox
+//            {
+//                id : endHour
+//                height : 25
+//                width : 60
+
+//                font.pixelSize: 16
+
+//                minimumValue : startHour.value
+//                maximumValue : 24
+//                stepSize : 1
+
+//                style : SpinBoxStyle{}
+
+//                anchors.verticalCenter: parent.verticalCenter
+
+//                value :  oneEvent.eH
+//            }
+
+//            Label
+//            {
+//                height : 20
+//                width : 10
+
+//                font.pixelSize: 16
+//                font.bold: true
+
+//                text : ":"
+
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+//            SpinBox
+//            {
+//                id : endMinute
+//                height : 25
+//                width : 60
+
+//                font.pixelSize: 16
+
+//                minimumValue : 0
+//                maximumValue : 60
+//                stepSize : 15
+
+//                style : SpinBoxStyle{}
+
+//                anchors.verticalCenter: parent.verticalCenter
+
+//                value :  oneEvent.eM
+//            }
+
+
+//        }
+
+//        Row
+//        {
+//            spacing: 5
+
+//            height : 40
+//            width : parent.width
+
+//            Label
+//            {
+//                id : labelTitle
+//                height : 20
+//                width : 60
+
+//                font.pixelSize: 16
+//                font.bold: true
+
+//                text : "Title : "
+
+//                anchors.verticalCenter: parent.verticalCenter
+//            }
+
+//            TextField
+//            {
+//                style: TextFieldStyle {}
+//                id : title
+//                height : 40
+//                width : parent.width - labelTitle.width - 10
+
+//                font.pixelSize: 16
+
+//                anchors.verticalCenter: parent.verticalCenter
+
+
+//                text :  oneEvent.eventTitle
+//            }
+//        }
+
+//        Label
+//        {
+//            id : labelDecription
+//            height : 20
+//            width : 60
+
+//            font.pixelSize: 16
+//            font.bold: true
+
+//            text : "Description : "
+
+//        }
+
+//        TextArea
+//        {
+//            style: TextAreaStyle {}
+//            id : descriptionId
+//            height : 80
+//            width : parent.width
+
+//            font.pixelSize: 16
+//            text :  oneEvent.description
+//        }
+
+//        Label
+//        {
+//            id : attachedFilesId
+//            height : 30
+//            width : 60
+
+//            font.pixelSize: 16
+//            font.bold: true
+
+//            text : "Attached Files : "
+
+//        }
+
+//        ScrollView
+//        {
+//            width : parent.width
+//            height : 200
+
+//            style :  ScrollViewStyle { transientScrollBars : false }
+
+//            ListView
+//            {
+
+//                anchors.fill: parent
+
+//                model : attachedFiles
+
+//                delegate : AttachedFileDelegate
+//                {
+//                onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
+//                onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
+//            }
+
+//            spacing: 5
+//        }
+//    }
+
+
+//}
 
 
 }
