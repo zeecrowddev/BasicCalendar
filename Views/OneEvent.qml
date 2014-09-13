@@ -78,6 +78,10 @@ Item
             {
                 eventModel.repeatType = "ED"
             }
+            if (rbEachYear.checked)
+            {
+                eventModel.repeatType = "EY"
+            }
             else
             {
                 eventModel.repeatType = ""
@@ -121,6 +125,11 @@ Item
             else if (eventModel.repeatType === "ED")
             {
                 rbEachDay.checked = true;
+
+            }
+            if (eventModel.repeatType === "EY")
+            {
+                rbEachYear.checked = true;
 
             }
         }
@@ -174,7 +183,7 @@ Item
                 id : titleId
                 height : 20
 
-//                text: titleValue
+                //                text: titleValue
 
                 width : parent.width - labelTitle.width - 10
 
@@ -213,7 +222,7 @@ Item
 
                 anchors.verticalCenter: parent.verticalCenter
 
-            //    text : startHourValue
+                //    text : startHourValue
             }
 
             Label
@@ -238,7 +247,7 @@ Item
 
                 anchors.verticalCenter: parent.verticalCenter
 
-               // text : endHourValue
+                // text : endHourValue
 
 
             }
@@ -420,17 +429,17 @@ Item
 
                 anchors.fill: parent
 
-//                model : eventModel.attachedFiles
+                //                model : eventModel.attachedFiles
 
                 delegate : AttachedFileDelegate
                 {
-                    onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
-                    onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
-                }
-
-                spacing: 5
+                onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
+                onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
             }
+
+            spacing: 5
         }
+    }
 
 
 }

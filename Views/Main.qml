@@ -647,6 +647,9 @@ function updateDayPropertyFromItem(idItem)
             var day = split[2]
             if ( day === "NaN")
                 return;
+            var month = split[1]
+            if ( month === "NaN")
+                return;
             var nMonth = currentMonth + 1
             var pMonth = currentMonth - 1
             var nYear = mainView.currentYear;
@@ -701,6 +704,17 @@ function updateDayPropertyFromItem(idItem)
                     onDay.date = nYear + "/" + nMonth + "/" + i
                     listObject.push(onDay)
                 }
+            }
+            else  if (o.repeat.rT === "EY")
+            {
+                o.date = currentYear + "/" + month + "/" + day
+                var pYearObject = JSON.parse(JSON.stringify(o))
+                pYearObject.date = currentYear - 1 + "/" + month + "/" + day
+                var nYearObject = JSON.parse(JSON.stringify(o))
+                nYearObject.date = currentYear + 1 + "/" + month + "/" + day
+                listObject.push(o)
+                listObject.push(pYearObject)
+                listObject.push(nYearObject)
             }
 
         }
