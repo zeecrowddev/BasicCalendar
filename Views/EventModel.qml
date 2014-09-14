@@ -22,7 +22,6 @@ Item
 
     function clear()
     {
-        console.log(">> Clear ")
         idItem = "";
         date = null;
         startHour = "07:00";
@@ -66,12 +65,8 @@ Item
 
         attachedFilesModel.clear();
 
-        console.log(">> fromJSObject " + model.attachedFiles)
-
         if (model.attachedFiles !== null && model.attachedFiles !== undefined)
         {
-
-           console.log(">> Attachedfiled exists")
            Tools.forEachInArray(model.attachedFiles, function (x) { attachedFilesModel.append({"name" : x}) })
         }
 
@@ -97,13 +92,7 @@ Item
         var o = {}
         o.id = idItem === "" ? generateKey() : idItem
 
-        console.log(">> toJSObject date " + date)
-
         o.date = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
-
-        console.log(">> startHour " + startHour)
-        console.log(">> toJSObject title " + title)
-
         o.sH = parseInt(startHour.split(":")[0])
         o.sM = parseInt(startHour.split(":")[1])
         o.eH = parseInt(endHour.split(":")[0])
@@ -125,7 +114,6 @@ Item
             }
         }
 
-        console.log(">> toJSObject repeatType " + repeatType)
         if (repeatType !== null && repeatType !== "")
         {
             o.repeat = {}

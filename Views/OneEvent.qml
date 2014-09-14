@@ -46,13 +46,11 @@ Item
     {
 
         graphiqueToEventModel();
-        console.log(">> validateEvent call addOrModifyEvent " + eventModel.startHour + " " + startHour.text )
         mainView.addOrModifyEvent(eventModel)
     }
 
     function clearView()
     {
-        console.log(">> clearView ")
         eventModel.clear()
         eventModel.date = currentDate;
         eventModelToGraphique()
@@ -60,13 +58,10 @@ Item
 
     function graphiqueToEventModel()
     {
-        console.log(">> graphiqueToEventModel " + startHourValue + " " + endHourValue + " tv " + titleId.text + " dv " + descriptionId.text)
         eventModel.startHour = startHour.text;
         eventModel.endHour = endHour.text;
         eventModel.title = titleId.text
         eventModel.description = descriptionId.text
-
-        console.log(">> graphiqueToEventModel gbRepeat.checked " + gbRepeat.checked)
 
         if (gbRepeat.checked)
         {
@@ -77,10 +72,12 @@ Item
             else if (rbEachDay.checked)
             {
                 eventModel.repeatType = "ED"
-            }
-            if (rbEachYear.checked)
+            } else if (rbEachYear.checked)
             {
                 eventModel.repeatType = "EY"
+            } else if (rbEachWeekDay.checked)
+            {
+                eventModel.repeatType = "EWD"
             }
             else
             {
@@ -91,15 +88,10 @@ Item
         {
             eventModel.repeatType = ""
         }
-
-        console.log(">> graphiqueToEventModel eventModel.repeatType " + eventModel.repeatType)
-
     }
 
     function eventModelToGraphique()
     {
-        console.log(">> eventModelToGraphique " )
-        console.log(">> eventModelToGraphique eventModel.repeatType " + eventModel.repeatType )
         startHour.text = eventModel.startHour
         endHour.text = eventModel.endHour
         titleId.text = eventModel.title
@@ -125,11 +117,14 @@ Item
             else if (eventModel.repeatType === "ED")
             {
                 rbEachDay.checked = true;
-
             }
-            if (eventModel.repeatType === "EY")
+            else if (eventModel.repeatType === "EY")
             {
                 rbEachYear.checked = true;
+            }
+            else if (eventModel.repeatType === "EWD")
+            {
+                rbEachWeekDay.checked = true;
 
             }
         }
@@ -440,271 +435,6 @@ Item
             spacing: 5
         }
     }
-
-
 }
-
-//    Column
-//    {
-//        anchors.fill: parent
-
-//        spacing: 5
-
-//        Row
-//        {
-//            spacing: 5
-//            height : 25
-//            width : parent.width
-
-//            Label
-//            {
-//                id : labelStart
-//                height : 20
-//                width : 60
-
-//                font.pixelSize: 16
-//                font.bold: true
-
-//                text : "Start : "
-
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
-
-
-//            SpinBox
-//            {
-//                id : startHour
-//                height : 25
-//                width : 60
-
-//                font.pixelSize: 16
-
-//                minimumValue : 1
-//                maximumValue : 24
-//                stepSize : 1
-
-//                style : SpinBoxStyle{}
-
-//                anchors.verticalCenter: parent.verticalCenter
-
-//                value :  oneEvent.sH
-//            }
-
-//            Label
-//            {
-//                id : separtor
-//                height : 20
-//                width : 10
-
-
-//                font.pixelSize: 16
-//                font.bold: true
-
-//                text : ":"
-
-//                verticalAlignment: Text.AlignHCenter
-
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
-
-//            SpinBox
-//            {
-//                id : startMinute
-
-//                height : 25
-//                width : 60
-
-//                font.pixelSize: 16
-
-//                minimumValue : 0
-//                maximumValue : 60
-//                stepSize : 15
-
-//                style : SpinBoxStyle{}
-
-//                anchors.verticalCenter: parent.verticalCenter
-
-//                value :  oneEvent.sM
-//            }
-
-//        }
-
-//        Row
-//        {
-//            height : 25
-//            width : parent.width
-
-//            spacing: 5
-
-//            Label
-//            {
-//                id : labelEnd
-//                height : 25
-//                width : 60
-
-//                font.pixelSize: 16
-//                font.bold: true
-
-//                text : "End : "
-
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
-
-
-//            SpinBox
-//            {
-//                id : endHour
-//                height : 25
-//                width : 60
-
-//                font.pixelSize: 16
-
-//                minimumValue : startHour.value
-//                maximumValue : 24
-//                stepSize : 1
-
-//                style : SpinBoxStyle{}
-
-//                anchors.verticalCenter: parent.verticalCenter
-
-//                value :  oneEvent.eH
-//            }
-
-//            Label
-//            {
-//                height : 20
-//                width : 10
-
-//                font.pixelSize: 16
-//                font.bold: true
-
-//                text : ":"
-
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
-
-//            SpinBox
-//            {
-//                id : endMinute
-//                height : 25
-//                width : 60
-
-//                font.pixelSize: 16
-
-//                minimumValue : 0
-//                maximumValue : 60
-//                stepSize : 15
-
-//                style : SpinBoxStyle{}
-
-//                anchors.verticalCenter: parent.verticalCenter
-
-//                value :  oneEvent.eM
-//            }
-
-
-//        }
-
-//        Row
-//        {
-//            spacing: 5
-
-//            height : 40
-//            width : parent.width
-
-//            Label
-//            {
-//                id : labelTitle
-//                height : 20
-//                width : 60
-
-//                font.pixelSize: 16
-//                font.bold: true
-
-//                text : "Title : "
-
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
-
-//            TextField
-//            {
-//                style: TextFieldStyle {}
-//                id : title
-//                height : 40
-//                width : parent.width - labelTitle.width - 10
-
-//                font.pixelSize: 16
-
-//                anchors.verticalCenter: parent.verticalCenter
-
-
-//                text :  oneEvent.eventTitle
-//            }
-//        }
-
-//        Label
-//        {
-//            id : labelDecription
-//            height : 20
-//            width : 60
-
-//            font.pixelSize: 16
-//            font.bold: true
-
-//            text : "Description : "
-
-//        }
-
-//        TextArea
-//        {
-//            style: TextAreaStyle {}
-//            id : descriptionId
-//            height : 80
-//            width : parent.width
-
-//            font.pixelSize: 16
-//            text :  oneEvent.description
-//        }
-
-//        Label
-//        {
-//            id : attachedFilesId
-//            height : 30
-//            width : 60
-
-//            font.pixelSize: 16
-//            font.bold: true
-
-//            text : "Attached Files : "
-
-//        }
-
-//        ScrollView
-//        {
-//            width : parent.width
-//            height : 200
-
-//            style :  ScrollViewStyle { transientScrollBars : false }
-
-//            ListView
-//            {
-
-//                anchors.fill: parent
-
-//                model : attachedFiles
-
-//                delegate : AttachedFileDelegate
-//                {
-//                onDeleteAttachedFile : mainView.deleteRessourceOnEvent(oneEvent.idItem,idResource);
-//                onOpenAttachedFile : mainView.openRessourceOnEvent(oneEvent.idItem,idResource);
-//            }
-
-//            spacing: 5
-//        }
-//    }
-
-
-//}
-
 
 }

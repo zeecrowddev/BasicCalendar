@@ -245,11 +245,8 @@ FileDialog
 
     onAccepted:
     {
-            console.log(">> accepted to upload " + oneEventPanel.idItem + " " + fileUrl)
-            zcResourceDescriptor.fromLocalFile(fileUrl);
-            console.log(">> zcResourceDescriptor " + zcResourceDescriptor.name)
-
-            mainView.addRessoureOnEvent(oneEventPanel.idItem,zcResourceDescriptor.name,fileUrl)
+      zcResourceDescriptor.fromLocalFile(fileUrl);
+      mainView.addRessoureOnEvent(oneEventPanel.idItem,zcResourceDescriptor.name,fileUrl)
     }
 }
 
