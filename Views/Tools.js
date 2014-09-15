@@ -171,3 +171,48 @@ function days_in_month(month,year) {
     return m[1] + 1; //tous les autres févriers = 29 jours
 }
 
+function dateToString(date)
+{
+    return date.getDate() + "/" + (date.getMonth() +1)  + "/" + date.getFullYear()
+}
+
+function stringToDate(str)
+{
+    var split = str.split("/")
+    return new Date( parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]))
+}
+
+function dateTojson(date)
+{
+    return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
+}
+
+function jsonToDate(str)
+{
+    var split = str.split("/")
+    return new Date( parseInt(split[0]), parseInt(split[1]), parseInt(split[2]))
+}
+
+
+
+function intHourToString(hour,minute)
+{
+
+    var strH = hour  < 9 ? "0" + hour : hour
+    var strM = minute  < 9 ? "0" + minute : minute
+
+    return strH + ":" + strM;
+}
+
+function stringIsNullOrEmpty(str)
+{
+    return str === undefined || str === null || str ==="";
+}
+
+function objectIsNullOrUndefined(o)
+{
+    return o === undefined || o === null;
+}
+
+
+

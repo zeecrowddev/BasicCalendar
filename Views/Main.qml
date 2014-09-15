@@ -313,14 +313,14 @@ Zc.AppView
                 anchors.top : parent.top
                 anchors.left : parent.left
                 anchors.right : parent.right
-                height: 25
+                height: 18
                 color:  styleData.today ? "orange" : "grey"
                 border.color: "grey"
                 border.width: 1
                 Label {
                     id: dayDelegateText
                     text: styleData.date.getDate()
-                    font.pixelSize: 14
+                    font.pixelSize: 12
                     anchors.centerIn: parent
                     color: calculateTextColor(styleData.selected,styleData.visibleMonth)
                 }
@@ -354,15 +354,16 @@ Zc.AppView
                 spacing : 3
 
                 delegate : Rectangle {     color : index % 2 ? "#f2f2f2" : "white" ;
-                    height : 15; width : parent.width;
+                    height : 12; width : parent.width;
                     clip : true
                     Label
                     {
-                        text : "<b>"  + modelData.sH + ":" + modelData.sM + "-" + modelData.eH + ":" + modelData.eM + "</b> " + modelData.title
+                        text : Tools.intHourToString(modelData.sH,modelData.sM) + " ... " + modelData.title
                         width : parent.width
                         height : parent.height
                         anchors.left : parent.left
                         elide : Text.ElideRight
+                        font.pixelSize: 10
                     }
                 }
                 interactive: false
@@ -608,7 +609,7 @@ function updateDayPropertyFromItem(idItem)
         // le Json en objet
         var o = Tools.parseDatas(stro);
         // Pas de date associé : on peut rien faire
-        if (o.date === undefined || o.date === null || o.date === "")
+        if ( Tools.stringIsNullOrEmpty(o.date))
             return;
 
         // on verrouille toujours l'id

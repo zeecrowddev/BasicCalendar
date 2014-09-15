@@ -12,6 +12,8 @@ Item
     property string description : ""
     property string who : ""
     property string repeatType : ""
+    property var repeatBegin : null;
+    property var repeatEnd : null;
 
     property alias attachedFiles : attachedFilesModel
 
@@ -31,55 +33,34 @@ Item
         who = "";
         attachedFilesModel.clear();
         repeatType = ""
+        repeatBegin = null;
+        repeatEnd = null;
     }
 
 
+    // le model ne contien que des string et des int
     function fromJSObject(model)
     {
         idItem = model.id
         who = model.cU
 
-        var split = model.date.split("/");
-        var dateModel = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
+        date = Tools.jsonToDate(model.date)
 
-        date = dateModel
+        startHour =  Tools.intHourToString(model.sH,model.sM)
+        endHour =  Tools.intHourToString(model.eH,model.eM)
 
-        var strSH = model.sH  < 9 ? "0" + model.sH : model.sH
-        var strSM = model.sM  < 9 ? "0" + model.sM : model.sM
-
-        var strEH = model.eH < 9 ? "0" + model.eH : model.eH
-        var strEM = model.eM < 9 ? "0" + model.eM : model.eM
-
-        startHour = strSH + ":" + strSM;
-        endHour = strEH + ":" + strEM;
-
-        if (model.title !== undefined && model.title !== null)
-            title = model.title
-        else
-            title = ""
-
-        if (model.description !== undefined && model.description !== null)
-            description = model.description
-        else
-            description = ""
+        title = Tools.stringIsNullOrEmpty(model.title) ? "" : model.title
+        description = Tools.stringIsNullOrEmpty(model.description) ? "" : model.description
 
         attachedFilesModel.clear();
+        Tools.forEachInArray(model.attachedFiles, function (x) {
+            attachedFilesModel.append({"name" : x}) })
 
-        if (model.attachedFiles !== null && model.attachedFiles !== undefined)
+        if (!Tools.objectIsNullOrUndefined(model.repeat))
         {
-           Tools.forEachInArray(model.attachedFiles, function (x) { attachedFilesModel.append({"name" : x}) })
-        }
-
-        if (model.repeat !== null && model.repeat !== undefined)
-        {
-            if (model.repeat.rT !== undefined )
-            {
-                repeatType = model.repeat.rT
-            }
-            else
-            {
-                repeatType = ""
-            }
+            repeatType = Tools.stringIsNullOrEmpty(model.repeat.rT) ? "" : model.repeat.rT
+            repeatBegin = Tools.stringIsNullOrEmpty(model.repeat.rB) ? null : Tools.jsonToDate(model.repeat.rB)
+            repeatEnd = Tools.stringIsNullOrEmpty(model.repeat.rE) ? null : Tools.jsonToDate(model.repeat.rE)
         }
         else
         {
@@ -92,7 +73,7 @@ Item
         var o = {}
         o.id = idItem === "" ? generateKey() : idItem
 
-        o.date = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
+        o.date =  Tools.dateTojson(date);
         o.sH = parseInt(startHour.split(":")[0])
         o.sM = parseInt(startHour.split(":")[1])
         o.eH = parseInt(endHour.split(":")[0])
@@ -118,8 +99,12 @@ Item
         {
             o.repeat = {}
             o.repeat.rT = repeatType;
-        }
 
+            if ( repeatBegin !== null)
+                o.repeat.rB = Tools.dateTojson(repeatBegin)
+            if ( repeatEnd !== null)
+                o.repeat.rE = Tools.dateTojson(repeatEnd)
+        }
 
         return o;
     }

@@ -23,6 +23,7 @@ import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 
+import "Tools.js" as Tools
 
 Rectangle
 {
@@ -46,10 +47,10 @@ Rectangle
         anchors.left : parent.left
         anchors.leftMargin : 5
 
-        font.pixelSize: 14
+        font.pixelSize: 12
         font.bold: true
 
-        text : modelData.sH + ":" + modelData.sM + " - " + modelData.eH + ":" + modelData.eM
+        text : Tools.intHourToString(modelData.sH,modelData.sM) + " - " + Tools.intHourToString(modelData.eH,modelData.eM)
     }
 
     Label
@@ -61,8 +62,8 @@ Rectangle
         anchors.right : parent.left
         anchors.rightMargin : 5
 
-        font.pixelSize: 14
-        font.bold: true
+        font.pixelSize: 12
+        //font.bold: true
 
         text : modelData.title
     }

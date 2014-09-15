@@ -83,6 +83,19 @@ Item
             {
                 eventModel.repeatType = ""
             }
+
+            if (gbDaysSelector.checked === true)
+            {
+                var splitRb = repeatBegin.text.split("/")
+                eventModel.repeatBegin = new Date(parseInt(splitRb[2]),parseInt(splitRb[1]),parseInt(splitRb[0]))
+                var splitRe = repeatEnd.text.split("/")
+                eventModel.repeatEnd = new Date(parseInt(splitRe[2]),parseInt(splitRe[1]),parseInt(splitRe[0]))
+            }
+            else
+            {
+                eventModel.repeatBegin = null;
+                eventModel.repeatEnd = null;
+            }
         }
         else
         {
@@ -106,9 +119,15 @@ Item
             rbEachMonth.checked = false;
             rbEachYear.checked = false;
             rbEachWeekDay.checked = false;
+
+            gbDaysSelector.checked = false
+            repeatBegin.text = "01/01/2000"
+            repeatEnd.text = "01/01/2000"
         }
         else
         {
+
+
             gbRepeat.checked = true
             if (eventModel.repeatType === "EM")
             {
@@ -126,6 +145,37 @@ Item
             {
                 rbEachWeekDay.checked = true;
 
+            }
+
+            if (eventModel.repeatBegin === null && eventModel.repeatEnd === null)
+            {
+                gbDaysSelector.checked = false
+                repeatBegin.text = "01/01/2000"
+                repeatEnd.text = "01/01/2000"
+            }
+            else
+            {
+                gbDaysSelector.checked = true
+            }
+
+            console.log(">> eventModel.repeatBegin " + eventModel.repeatBegin)
+
+            if (eventModel.repeatBegin === null)
+            {
+                repeatBegin.text = "01/01/2000"
+            }
+            else
+            {
+                repeatBegin.text = eventModel.repeatBegin.getDate() + "/" + eventModel.repeatBegin.getMonth() + "/" + eventModel.repeatBegin.getFullYear()
+            }
+
+            if (eventModel.repeatEnd === null)
+            {
+                repeatEnd.text = "01/01/2000"
+            }
+            else
+            {
+                repeatEnd.text = eventModel.repeatEnd.getDate() + "/" + eventModel.repeatEnd.getMonth() + "/" + eventModel.repeatEnd.getFullYear()
             }
         }
     }
@@ -338,6 +388,7 @@ Item
 
                         DateWidget
                         {
+                            id : repeatBegin
                             height : 20
                             width : 82
                         }
@@ -363,6 +414,8 @@ Item
 
                         DateWidget
                         {
+                            id : repeatEnd
+
                             height : 20
                             width : 82
                         }
