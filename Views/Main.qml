@@ -149,22 +149,19 @@ Zc.AppView
 
             var strListEvent = mainView["_"+ i];
 
-            if (strListEvent === ""  || strListEvent === undefined)
+            if (Tools.stringIsNullOrEmpty(strListEvent))
                 continue;
 
             var listEvent = Tools.parseDatas(strListEvent)
 
-            if (listEvent.dates === null || listEvent.dates === undefined)
+            if (Tools.objectIsNullOrUndefined(listEvent.dates))
                 continue
 
-            if (Tools.existsInArray( listEvent.dates, function (x)
-            { return x.id === idItem})
-                    )
+            if (Tools.existsInArray( listEvent.dates, function (x) { return x.id === idItem}))
             {
                 return i;
             }
         }
-
         return 100;
     }
 
@@ -188,11 +185,6 @@ Zc.AppView
 
 
         currentYear = yy
-    }
-
-    function generateKey()
-    {
-        return Date.now();
     }
 
     SplitView
@@ -431,17 +423,6 @@ Zc.AppView
 */
 
 
-function calculateDayFromItem(idItem)
-{
-    var o = Tools.parseDatas(items.getItem(idItem,"{}"));
-    if (o.date === undefined || o.date === null || o.date === "")
-        return;
-    var split = o.date.split("/");
-    var date = new Date(parseInt(split[1]),parseInt(split[2]),parseInt(split[3]),0,0,0);
-
-    return mainView.calculateDayProperty(date);
-}
-
 function calculateDayProperty(date)
 {
     var daydate = date.getDate();
@@ -509,12 +490,11 @@ function deleteItemFromItem(idItem)
 function clearItemDayProperties(idItem)
 {
 
-
     for (var i = 1;i <= 42;i++)
     {
         var allday = Tools.parseDatas(mainView["_" + i]);
 
-        if (allday.dates === undefined || allday.dates === null)
+        if ( Tools.objectIsNullOrUndefined(allday.dates) )
         {
             allday.dates = [];
         }
@@ -536,17 +516,31 @@ function clearItemDayProperties(idItem)
 */
 function resolveOneEvent(o)
 {
-    var split = o.date.split("/");
 
-    if ( split[0] === "NaN")
-        return;
-    if ( split[1] === "NaN")
-        return;
-    if ( split[2] === "NaN")
-        return;
+    var date =  Tools.jsonToDate(o.date);
 
+    // on determine si on est dans une date validsi c'est un repeat
+    if (!Tools.objectIsNullOrUndefined(o.repeat))
+    {
+        if (!Tools.objectIsNullOrUndefined(o.repeat.rB))
+        {
+            var dB = Tools.jsonToDate(o.repeat.rB);
+            if (date.getTime() < dB.getTime())
+            {
+                return;
+            }
+        }
+        if (!Tools.objectIsNullOrUndefined(o.repeat.rE))
+        {
+            var dE = Tools.jsonToDate(o.repeat.rE);
+            if (date.getTime() > dE.getTime())
+            {
+              return;
+            }
 
-    var date = new Date(parseInt(split[0]),parseInt(split[1]),parseInt(split[2]),0,0,0);
+        }
+
+    }
 
     var dayProperty = mainView.calculateDayProperty(date);
 
@@ -555,7 +549,7 @@ function resolveOneEvent(o)
 
     var allday = Tools.parseDatas(mainView["_" + dayProperty]);
 
-    if (allday.dates === undefined || allday.dates === null)
+    if (Tools.objectIsNullOrUndefined(allday.dates))
     {
         allday.dates = [];
     }
@@ -565,6 +559,7 @@ function resolveOneEvent(o)
     allday.dD = date.getDate()
 
     var found = Tools.indexInArray(allday.dates, function (x) { return x.id === o.id})
+
 
     if (found !== -1)
     {
@@ -584,7 +579,7 @@ function resolveOneEvent(o)
         // on met à jour la liste des events à cette date si c'est celle courant
         updateDayEventsList(date)
 
-        // Si on est en train d'editer cette date : o nla met à jour
+        // Si on est en train d'editer cette date : on la met à jour
         if (dayEvents.state === "oneevent")
         {
             dayEvents.updateOneEventData(o)
@@ -605,7 +600,6 @@ function updateDayPropertyFromItem(idItem)
         // Le Json en string
         var stro = items.getItem(idItem,"{}")
 
-
         // le Json en objet
         var o = Tools.parseDatas(stro);
         // Pas de date associé : on peut rien faire
@@ -617,8 +611,7 @@ function updateDayPropertyFromItem(idItem)
 
         var listObject = [];
 
-        if (o.repeat !== null && o.repeat !== undefined && o.repeat.rT !== "" &&
-                o.repeat.rT !== undefined && o.repeat.rt !== null)
+        if (  !Tools.objectIsNullOrUndefined(o.repeat) && !Tools.stringIsNullOrEmpty(o.repeat.rT) )
         {
             var split = o.date.split("/");
             var day = split[2]
@@ -652,9 +645,9 @@ function updateDayPropertyFromItem(idItem)
             {
 
                 o.date = currentYear + "/" + currentMonth + "/" + day
-                var pMonthObject = JSON.parse(JSON.stringify(o))
+                var pMonthObject = Tools.clone(o)
                 pMonthObject.date = pYear + "/" + pMonth + "/" + day
-                var nMonthObject = JSON.parse(JSON.stringify(o))
+                var nMonthObject = Tools.clone(o)
                 nMonthObject.date = nYear + "/" + nMonth + "/" + day
 
                 listObject.push(o)
@@ -667,13 +660,13 @@ function updateDayPropertyFromItem(idItem)
                 for (var i = 0 ; i <= 31 ; i++)
                 {
 
-                    var ocDay = JSON.parse(JSON.stringify(o))
+                    var ocDay = Tools.clone(o)
                     ocDay.date = currentYear + "/" + currentMonth + "/" + i
                     listObject.push(ocDay)
-                    var opDay = JSON.parse(JSON.stringify(o))
+                    var opDay = Tools.clone(o)
                     opDay.date = pYear + "/" + pMonth + "/" + i
                     listObject.push(opDay)
-                    var onDay = JSON.parse(JSON.stringify(o))
+                    var onDay = Tools.clone(o)
                     onDay.date = nYear + "/" + nMonth + "/" + i
                     listObject.push(onDay)
                 }
@@ -689,21 +682,21 @@ function updateDayPropertyFromItem(idItem)
                     var cd = new Date(currentYear,currentMonth,j,0,0,0);
                     if (cd.getDay() === dow)
                     {
-                        var ocDayOfWeek = JSON.parse(JSON.stringify(o))
+                        var ocDayOfWeek = Tools.clone(o)
                         ocDayOfWeek.date = currentYear + "/" + currentMonth + "/" + j
                         listObject.push(ocDayOfWeek)
                     }
                     cd = new Date(pYear,pMonth,j,0,0,0);
                     if (cd.getDay() === dow)
                     {
-                        var opDayOfWeek = JSON.parse(JSON.stringify(o))
+                        var opDayOfWeek = Tools.clone(o)
                         opDayOfWeek.date = pYear + "/" + pMonth + "/" + j
                         listObject.push(opDayOfWeek)
                     }
                     cd = new Date(nYear,nMonth,j,0,0,0);
                     if (cd.getDay() === dow)
                     {
-                        var onDayOfWeek = JSON.parse(JSON.stringify(o))
+                        var onDayOfWeek = Tools.clone(o)
                         onDayOfWeek.date = nYear + "/" + nMonth + "/" + j
                         listObject.push(onDayOfWeek)
                     }
@@ -712,9 +705,9 @@ function updateDayPropertyFromItem(idItem)
             else  if (o.repeat.rT === "EY")
             {
                 o.date = currentYear + "/" + month + "/" + day
-                var pYearObject = JSON.parse(JSON.stringify(o))
+                var pYearObject = Tools.clone(o)
                 pYearObject.date = currentYear - 1 + "/" + month + "/" + day
-                var nYearObject = JSON.parse(JSON.stringify(o))
+                var nYearObject = Tools.clone(o)
                 nYearObject.date = currentYear + 1 + "/" + month + "/" + day
                 listObject.push(o)
                 listObject.push(pYearObject)
@@ -727,6 +720,13 @@ function updateDayPropertyFromItem(idItem)
         }
 
         var validListObject = [];
+
+        Tools.forEachInArray(listObject,
+                             function (x)
+                             {
+                                 resolveOneEvent(x)
+                             }
+                             )
 
         clearItemDayProperties(o.id)
 
@@ -849,7 +849,7 @@ Zc.CrowdActivity
 
         onItemChanged :
         {
-           updateDayPropertyFromItem(idItem)
+            updateDayPropertyFromItem(idItem)
         }
 
         onItemDeleted :
@@ -1032,7 +1032,7 @@ FileDialog
         downloadScreenId.fullPath = folder + "/" + downloadScreenId.idRessource
         if ( !documentFolder.downloadFileTo(downloadScreenId.idItem + "/" + downloadScreenId.idRessource,folder + "/" + downloadScreenId.idRessource,queryStatusForDownloadRessourceDocumentFolder))
         {
-                downloadScreenId.visible = false;
+            downloadScreenId.visible = false;
         }
     }
 }

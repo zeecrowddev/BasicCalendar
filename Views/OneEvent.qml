@@ -72,10 +72,12 @@ Item
             else if (rbEachDay.checked)
             {
                 eventModel.repeatType = "ED"
-            } else if (rbEachYear.checked)
+            }
+            else if (rbEachYear.checked)
             {
                 eventModel.repeatType = "EY"
-            } else if (rbEachWeekDay.checked)
+            }
+            else if (rbEachWeekDay.checked)
             {
                 eventModel.repeatType = "EWD"
             }
@@ -86,10 +88,8 @@ Item
 
             if (gbDaysSelector.checked === true)
             {
-                var splitRb = repeatBegin.text.split("/")
-                eventModel.repeatBegin = new Date(parseInt(splitRb[2]),parseInt(splitRb[1]),parseInt(splitRb[0]))
-                var splitRe = repeatEnd.text.split("/")
-                eventModel.repeatEnd = new Date(parseInt(splitRe[2]),parseInt(splitRe[1]),parseInt(splitRe[0]))
+                eventModel.repeatBegin = repeatBegin.getDate()
+                eventModel.repeatEnd = repeatEnd.getDate()
             }
             else
             {
@@ -126,8 +126,6 @@ Item
         }
         else
         {
-
-
             gbRepeat.checked = true
             if (eventModel.repeatType === "EM")
             {
@@ -147,7 +145,7 @@ Item
 
             }
 
-            if (eventModel.repeatBegin === null && eventModel.repeatEnd === null)
+            if (Tools.objectIsNullOrUndefined(eventModel.repeatBegin))
             {
                 gbDaysSelector.checked = false
                 repeatBegin.text = "01/01/2000"
@@ -158,25 +156,9 @@ Item
                 gbDaysSelector.checked = true
             }
 
-            console.log(">> eventModel.repeatBegin " + eventModel.repeatBegin)
 
-            if (eventModel.repeatBegin === null)
-            {
-                repeatBegin.text = "01/01/2000"
-            }
-            else
-            {
-                repeatBegin.text = eventModel.repeatBegin.getDate() + "/" + eventModel.repeatBegin.getMonth() + "/" + eventModel.repeatBegin.getFullYear()
-            }
-
-            if (eventModel.repeatEnd === null)
-            {
-                repeatEnd.text = "01/01/2000"
-            }
-            else
-            {
-                repeatEnd.text = eventModel.repeatEnd.getDate() + "/" + eventModel.repeatEnd.getMonth() + "/" + eventModel.repeatEnd.getFullYear()
-            }
+            repeatBegin.setDate(eventModel.repeatBegin)
+            repeatEnd.setDate(eventModel.repeatEnd)
         }
     }
 

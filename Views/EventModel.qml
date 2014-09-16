@@ -71,7 +71,7 @@ Item
     function toJSObject(myNickName,existingItem)
     {
         var o = {}
-        o.id = idItem === "" ? generateKey() : idItem
+        o.id = idItem === "" ? Tools.generateKey() : idItem
 
         o.date =  Tools.dateTojson(date);
         o.sH = parseInt(startHour.split(":")[0])
@@ -107,11 +107,6 @@ Item
         }
 
         return o;
-    }
-
-    function generateKey()
-    {
-        return Date.now();
     }
 
 }

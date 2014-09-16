@@ -173,7 +173,17 @@ function days_in_month(month,year) {
 
 function dateToString(date)
 {
-    return date.getDate() + "/" + (date.getMonth() +1)  + "/" + date.getFullYear()
+    if (objectIsNullOrUndefined(date))
+        return ""
+
+    var d = date.getDate();
+    if (d <= 9)
+        d = "0" + d;
+    var m = date.getMonth() +1;
+    if (m<=9)
+        m = "0" + m;
+
+    return d + "/" + m  + "/" + date.getFullYear()
 }
 
 function stringToDate(str)
@@ -214,5 +224,14 @@ function objectIsNullOrUndefined(o)
     return o === undefined || o === null;
 }
 
+function generateKey()
+{
+    return Date.now();
+}
+
+function clone(o)
+{
+    return JSON.parse(JSON.stringify(o))
+}
 
 
