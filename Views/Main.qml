@@ -312,7 +312,7 @@ Zc.AppView
                 Label {
                     id: dayDelegateText
                     text: styleData.date.getDate()
-                    font.pixelSize: 12
+                    font.pixelSize: 14
                     anchors.centerIn: parent
                     color: calculateTextColor(styleData.selected,styleData.visibleMonth)
                 }
@@ -346,7 +346,7 @@ Zc.AppView
                 spacing : 3
 
                 delegate : Rectangle {     color : index % 2 ? "#f2f2f2" : "white" ;
-                    height : 12; width : parent.width;
+                    height : 14; width : parent.width;
                     clip : true
                     Label
                     {
@@ -355,7 +355,7 @@ Zc.AppView
                         height : parent.height
                         anchors.left : parent.left
                         elide : Text.ElideRight
-                        font.pixelSize: 10
+                        font.pixelSize: 12
                     }
                 }
                 interactive: false

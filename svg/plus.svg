@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg2995"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="plus.svg">
+  <defs
+     id="defs2997">
+    <linearGradient
+       id="linearGradient3853">
+      <stop
+         style="stop-color:#3dba3d;stop-opacity:1;"
+         offset="0"
+         id="stop3855" />
+      <stop
+         style="stop-color:#009a26;stop-opacity:0.14893617;"
+         offset="1"
+         id="stop3857" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3859"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(3.3721586,-9.5369324)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3900"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-4.7954592,-9.5369324)"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3921"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-4.7954592,-9.5369324)"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3935"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(2.1477266,-9.5369324)"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3940"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.85669782,0,0,0.85669782,10.004681,-23.615853)"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3853"
+       id="linearGradient3946"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.85669782,0,0,0.85669782,10.004681,-23.615853)"
+       x1="-33.326706"
+       y1="25.582386"
+       x2="17.946022"
+       y2="-8.235796" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.5"
+     inkscape:cx="-4.5454545"
+     inkscape:cy="32"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3000">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <g
+       id="g3942"
+       transform="translate(22.727273,33.454545)"
+       inkscape:export-filename="C:\github\BasicCalendar\Resources\plus.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="-33.711647"
+         x="-23.139204"
+         height="64"
+         width="64"
+         id="rect3938"
+         style="fill:none;stroke:none" />
+      <path
+         inkscape:connector-curvature="0"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="C:\github\BasicCalendar\Resources\plus.png"
+         id="rect3003"
+         d="m 2.8639104,-29.125977 0,21.4174452 -21.4174454,0 0,11.9937694 21.4174454,0 0,21.4174454 11.9937696,0 0,-21.4174454 21.417445,0 0,-11.9937694 -21.417445,0 0,-21.4174452 -11.9937696,0 z"
+         style="fill:url(#linearGradient3946);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.17133957;stroke-miterlimit:4;stroke-opacity:0.41960784;stroke-dasharray:none" />
+    </g>
+  </g>
+</svg>

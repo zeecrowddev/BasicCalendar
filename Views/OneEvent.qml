@@ -280,6 +280,7 @@ Item
             }
         }
 
+
         // Repeat
         GroupBox
         {
@@ -294,6 +295,9 @@ Item
             Column
             {
                 id : columnRbRepeat
+
+                anchors.top : parent.top
+                anchors.topMargin : 10
 
                 width : 140
                 height : parent.height
@@ -329,6 +333,12 @@ Item
 
             }
 
+            Item
+            {
+                height : 5
+                width : 5
+            }
+
             GroupBox
             {
                 id : gbDaysSelector
@@ -346,7 +356,12 @@ Item
 
                 Column
                 {
-                    anchors.fill: parent
+                    anchors.top: parent.top
+                    anchors.topMargin : 10
+                    anchors.left : parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+
                     spacing : 2
 
                     Row
