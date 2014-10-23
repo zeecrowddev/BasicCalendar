@@ -24,7 +24,6 @@ import QtQuick.Dialogs 1.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.1
 
 import ZcClient 1.0 as Zc
 
@@ -818,8 +817,12 @@ function addOrModifyEvent(eventModel)
     // convertit le model en object JavaScriptScript
     // en recuperant la liste existante de fichiers attachés
     var jsObject = eventModel.toJSObject(mainView.context.nickname,items.getItem(eventModel.id,""))
+
+    var ismodify =  items.getItem(jsObject.id,"") !== "";
     // On met à jour tout le temps
     items.setItem(jsObject.id,JSON.stringify(jsObject),null)
+
+    appNotification.logEvent(ismodify ? Zc.AppNotification.Modify : Zc.AppNotification.Add,jsObject.date + "\n" +jsObject.title ,jsObject.description,"")
 }
 
 Zc.CrowdActivity
@@ -897,6 +900,8 @@ Zc.CrowdActivity
                 items.setItem(element.id,JSON.stringify(element),null)
 
                 uploadScreenId.visible = false;
+
+                appNotification.logEvent(Zc.AppNotification.Add,"Document\n" + uploadScreenId.resourceName,element.title + "\n" + element.date,"image://icons/" + "file:///" + uploadScreenId.resourceName)
             }
         }
 

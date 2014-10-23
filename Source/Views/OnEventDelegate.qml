@@ -168,7 +168,7 @@ Rectangle
         action : Action
         {
         id : remove
-        iconSource  : "qrc:/BasicCalendar/Resources/close.png"
+        iconSource  : "qrc:/BasicCalendar/Resources/bin.png"
         tooltip     : "Back"
         onTriggered :
         {

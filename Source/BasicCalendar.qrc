@@ -21,7 +21,6 @@
         <file>Views/SplashScreen.qml</file>
         <file>Views/Tools.js</file>
         <file>Views/UploadScreen.qml</file>
-        <file>BasicCalendar.zeeapmanifest</file>
         <file>Views/EventModel.qml</file>
         <file>Views/DateWidget.qml</file>
         <file>Views/DaySelector.qml</file>
